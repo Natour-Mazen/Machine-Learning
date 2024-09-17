@@ -77,7 +77,7 @@ def plot_hanoi(pegs, ax):
                     disk_width,
                     disk_height,
                     edgecolor='black',
-                    facecolor=colors[disk % len(colors)]  # Utilisation de couleurs flashy
+                    facecolor=colors[disk % len(colors)] 
                 )
                 ax.add_patch(rect)
 
