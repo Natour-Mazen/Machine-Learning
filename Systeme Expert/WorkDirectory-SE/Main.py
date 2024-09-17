@@ -28,7 +28,8 @@ def solve(initial_game, final_game):
             break
         visited_situations.add(current_situation)
 
-        possible_moves = [(0, 1), (0, 2), (1, 2), (2, 1), (1, 0), (2, 0)]
+        possible_moves = [(0, 1), (0, 2), (1, 2), (2, 1), (1, 0), (2, 0)]  # Les déplacements possibles, En changeant
+        # l'ordre des éléments de cette liste, on peut changer la stratégie de résolution et donc aller plus vite.
         if last_move:
             possible_moves.remove((last_move[1], last_move[0]))
 
@@ -65,7 +66,8 @@ def plot_hanoi(pegs, ax, num_moves):
     ax.set_aspect('equal')
     ax.axis('off')
 
-    colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5', '#FF8C33', '#FF3333', '#33FF8C', '#FF33F5']
+    colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5', '#FF8C33', '#FF3333', '#33FF8C',
+              '#FF33F5']
 
     for peg_index, peg in enumerate(pegs):
         for disk_index, disk in enumerate(peg):
