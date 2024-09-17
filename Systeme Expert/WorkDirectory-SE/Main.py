@@ -1,22 +1,26 @@
-from Hanoi_Game import Jeu_Hanoi
+from Hanoi_Game import Jeu_Hanoi, situation_non_vue
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import copy
 
 
+def hanoi_recursive(n, source, target, auxiliary, game_state, moves):
+    if n > 0:
+        # Move n-1 disks from source to auxiliary peg
+        hanoi_recursive(n - 1, source, auxiliary, target, game_state, moves)
+
+        # Move the nth disk from source to target
+        if game_state.effectue_deplacement(source, target):
+            moves.append(copy.deepcopy(game_state))
+
+        # Move n-1 disks from auxiliary to target peg
+        hanoi_recursive(n - 1, auxiliary, target, source, game_state, moves)
+
+
 def solve(initial_game_state, final_game_state):
-    nb_coups_joues = 0
     moves = []
-
-    print(initial_game_state)
-    while initial_game_state.get_situation() != final_game_state.get_situation():
-        if not any(initial_game_state.effectue_deplacement(i, j) for i, j in [(0, 1), (1, 2), (2, 1), (1, 0)]):
-            return moves
-        nb_coups_joues += 1
-        moves.append(copy.deepcopy(initial_game_state))
-        #print(initial_game_state)
-
-    print(f"Joues en {nb_coups_joues} deplacements.")
+    hanoi_recursive(3, 0, 2, 1, initial_game_state, moves)
+    print(f"Nombre de coups joués: {len(moves)}")
     return moves
 
 
@@ -64,7 +68,7 @@ if __name__ == '__main__':
     jeu_initial.pic[0, 2] = 1
 
     jeu_final = Jeu_Hanoi()
-    jeu_final.nombre_palet[1] = 3
+    jeu_final.nombre_palet[2] = 3
     jeu_final.pic[2, 0] = 3
     jeu_final.pic[2, 1] = 2
     jeu_final.pic[2, 2] = 1
