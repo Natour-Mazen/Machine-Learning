@@ -18,4 +18,3 @@ if __name__ == '__main__':
     move_history = solve(initial_game_state, final_game_state)
     #move_history = solve_optimal(initial_game_state, final_game_state)
     animate_hanoi(move_history)
-
