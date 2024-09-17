@@ -4,22 +4,19 @@ import matplotlib.animation as animation
 import copy
 
 
-def solve(initial_game_state: Jeu_Hanoi, final_game_state: Jeu_Hanoi):
-    nb_palets = max(initial_game_state.nombre_palet)
+def solve(initial_game_state, final_game_state):
     nb_coups_joues = 0
     moves = []
 
     print(initial_game_state)
     while initial_game_state.get_situation() != final_game_state.get_situation():
-        if not initial_game_state.effectue_deplacement(0, 1):
-            if not initial_game_state.effectue_deplacement(1, 2):
-                if not initial_game_state.effectue_deplacement(2, 1):
-                    if not initial_game_state.effectue_deplacement(1, 0):
-                        return moves
+        if not any(initial_game_state.effectue_deplacement(i, j) for i, j in [(0, 1), (1, 2), (2, 1), (1, 0)]):
+            return moves
         nb_coups_joues += 1
         moves.append(copy.deepcopy(initial_game_state))
+        #print(initial_game_state)
 
-    print("Joues en " + str(nb_coups_joues) + " deplacements.")
+    print(f"Joues en {nb_coups_joues} deplacements.")
     return moves
 
 
@@ -30,7 +27,6 @@ def plot_hanoi(pegs, ax):
     ax.set_aspect('equal')
     ax.axis('off')
 
-    # Plot disks
     for peg_index, peg in enumerate(pegs):
         for disk_index, disk in enumerate(peg):
             if disk != 0:
@@ -45,7 +41,6 @@ def plot_hanoi(pegs, ax):
                 )
                 ax.add_patch(rect)
 
-    # Plot pegs
     for i in range(3):
         ax.plot([i, i], [0, len(pegs[0]) + 1], 'k-', lw=2)
 
@@ -61,16 +56,18 @@ def animate_hanoi(moves, interval=500):
     plt.show(block=True)
 
 
-jeu_initial = Jeu_Hanoi()
-jeu_initial.nombre_palet[0] = 3
-jeu_initial.pic[0, 0] = 3
-jeu_initial.pic[0, 1] = 2
-jeu_initial.pic[0, 2] = 1
-jeu_final = Jeu_Hanoi()
-jeu_final.nombre_palet[1] = 3
-jeu_final.pic[1, 0] = 3
-jeu_final.pic[1, 1] = 2
-jeu_final.pic[1, 2] = 1
+if __name__ == '__main__':
+    jeu_initial = Jeu_Hanoi()
+    jeu_initial.nombre_palet[0] = 3
+    jeu_initial.pic[0, 0] = 3
+    jeu_initial.pic[0, 1] = 2
+    jeu_initial.pic[0, 2] = 1
 
-moves = solve(jeu_initial, jeu_final)
-animate_hanoi(moves, 1000)
+    jeu_final = Jeu_Hanoi()
+    jeu_final.nombre_palet[1] = 3
+    jeu_final.pic[2, 0] = 3
+    jeu_final.pic[2, 1] = 2
+    jeu_final.pic[2, 2] = 1
+
+    moves = solve(jeu_initial, jeu_final)
+    animate_hanoi(moves, 1000)
