@@ -1,27 +1,45 @@
-from Hanoi_Game import Jeu_Hanoi, situation_non_vue
+from Hanoi_Game import Jeu_Hanoi
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import copy
 
 
-def hanoi_recursive(n, source, target, auxiliary, game_state, moves):
-    if n > 0:
-        # Move n-1 disks from source to auxiliary peg
-        hanoi_recursive(n - 1, source, auxiliary, target, game_state, moves)
+def solve(initial_game, final_game):
+    number_of_moves = 0
+    moves_history = []
+    visited_situations = set()
+    last_move = None
 
-        # Move the nth disk from source to target
-        if game_state.effectue_deplacement(source, target):
-            moves.append(copy.deepcopy(game_state))
+    print("État initial:")
+    initial_game.afficher()
 
-        # Move n-1 disks from auxiliary to target peg
-        hanoi_recursive(n - 1, auxiliary, target, source, game_state, moves)
+    while initial_game.get_situation() != final_game.get_situation():
+        current_situation = initial_game.get_situation()
+        if current_situation in visited_situations:
+            break
+        visited_situations.add(current_situation)
 
+        possible_moves = [(0, 1), (0, 2), (1, 2), (2, 1), (1, 0), (2, 0)]
+        if last_move:
+            possible_moves.remove((last_move[1], last_move[0]))
 
-def solve(initial_game_state, final_game_state):
-    moves = []
-    hanoi_recursive(3, 0, 2, 1, initial_game_state, moves)
-    print(f"Nombre de coups joués: {len(moves)}")
-    return moves
+        move_made = False
+        for source_peg, target_peg in possible_moves:
+            if initial_game.effectue_deplacement(source_peg, target_peg):
+                last_move = (source_peg, target_peg)
+                move_made = True
+                break
+
+        if not move_made:
+            return moves_history
+
+        number_of_moves += 1
+        moves_history.append(copy.deepcopy(initial_game))
+        print(f"Après {number_of_moves} déplacement(s):")
+        initial_game.afficher()
+
+    print(f"Joué en {number_of_moves} déplacements.")
+    return moves_history
 
 
 def plot_hanoi(pegs, ax):
@@ -49,29 +67,29 @@ def plot_hanoi(pegs, ax):
         ax.plot([i, i], [0, len(pegs[0]) + 1], 'k-', lw=2)
 
 
-def animate_hanoi(moves, interval=500):
+def animate_hanoi(move_history, interval=500):
     fig, ax = plt.subplots()
 
     def update(frame):
-        plot_hanoi(moves[frame].pic, ax)
+        plot_hanoi(move_history[frame].pic, ax)
         return ax.patches
 
-    ani = animation.FuncAnimation(fig, update, frames=len(moves), interval=interval, repeat=False)
+    ani = animation.FuncAnimation(fig, update, frames=len(move_history), interval=interval, repeat=False)
     plt.show(block=True)
 
 
 if __name__ == '__main__':
-    jeu_initial = Jeu_Hanoi()
-    jeu_initial.nombre_palet[0] = 3
-    jeu_initial.pic[0, 0] = 3
-    jeu_initial.pic[0, 1] = 2
-    jeu_initial.pic[0, 2] = 1
+    initial_game_state = Jeu_Hanoi()
+    initial_game_state.nombre_palet[0] = 3
+    initial_game_state.pic[0, 0] = 3
+    initial_game_state.pic[0, 1] = 2
+    initial_game_state.pic[0, 2] = 1
 
-    jeu_final = Jeu_Hanoi()
-    jeu_final.nombre_palet[2] = 3
-    jeu_final.pic[2, 0] = 3
-    jeu_final.pic[2, 1] = 2
-    jeu_final.pic[2, 2] = 1
+    final_game_state = Jeu_Hanoi()
+    final_game_state.nombre_palet[1] = 3
+    final_game_state.pic[2, 0] = 3
+    final_game_state.pic[2, 1] = 2
+    final_game_state.pic[2, 2] = 1
 
-    moves = solve(jeu_initial, jeu_final)
-    animate_hanoi(moves, 1000)
+    move_history = solve(initial_game_state, final_game_state)
+    animate_hanoi(move_history)
