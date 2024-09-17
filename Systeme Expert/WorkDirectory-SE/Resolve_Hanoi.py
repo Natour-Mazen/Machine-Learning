@@ -28,12 +28,13 @@ def solve(initial_game, final_game):
             break
         visited_situations.add(current_situation)
 
-        #possible_moves = [(0, 1), (0, 2), (1, 2), (2, 1), (1, 0), (2, 0)]  # Les déplacements possibles, En changeant
+        possible_moves = [(0, 1), (0, 2), (1, 2), (2, 1), (1, 0), (2, 0)]  # Les déplacements possibles, En changeant
         # L'ordre des éléments de cette liste, on peut changer la stratégie de résolution et donc aller plus vite.
         # En inversant par example le couple (0,1) avec le couple (0,2) on peut résoudre le problème en 9 déplacements
         # au lieu de 16 actuellement.
         # Voici la liste des déplacements le plus optimal possibles : ( à decommenter et à commenter la ligne 31)
-        possible_moves = [[0, 2], [0, 1], [1, 2], [2, 1], [2, 0], [1, 0]]
+        # possible_moves = [(0, 2), (0, 1), (1, 2), (2, 1), (2, 0), (1, 0)]
+
         if last_move:
             possible_moves.remove((last_move[1], last_move[0]))
 
