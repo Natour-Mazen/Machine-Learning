@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
 def plot_hanoi(pegs, ax, num_moves):
     """Trace l'état actuel des pics de Hanoi.
 
