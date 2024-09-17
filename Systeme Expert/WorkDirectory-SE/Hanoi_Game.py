@@ -1,22 +1,20 @@
 import numpy as np
 import copy
 
-
 class Jeu_Hanoi:
     def __init__(self):
-        self.pic = (np.zeros([3, 3], dtype=int))
-        self.nombre_palet = (np.zeros(3, dtype=int))
+        self.pic = np.zeros([3, 3], dtype=int)
+        self.nombre_palet = np.zeros(3, dtype=int)
         self.situations = []
 
     def __str__(self):
         return str(self.nombre_palet)
 
     def get_situation(self):
-        situation_str = ''.join(map(str, self.pic.flatten()))
-        return situation_str
+        return ''.join(map(str, self.pic.flatten()))
 
-    def pic_vide(self, indice_pic1):
-        return np.all(self.pic[indice_pic1] == 0)
+    def pic_vide(self, indice_pic):
+        return np.all(self.pic[indice_pic] == 0)
 
     def get_pic_top_index(self, indice_pic):
         return self.nombre_palet[indice_pic] - 1
@@ -31,9 +29,7 @@ class Jeu_Hanoi:
             return False
         if self.pic_vide(indice_pic2):
             return True
-        top1 = self.get_pic_top(indice_pic1)
-        top2 = self.get_pic_top(indice_pic2)
-        return top1 < top2
+        return self.get_pic_top(indice_pic1) < self.get_pic_top(indice_pic2)
 
     def deplacer(self, indice_pic1, indice_pic2):
         palet = self.get_pic_top(indice_pic1)
