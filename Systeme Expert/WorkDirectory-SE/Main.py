@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import copy
 
+
 def solve(initial_game, final_game):
     """Résout le jeu de Hanoi en trouvant une séquence de déplacements.
 
@@ -49,6 +50,7 @@ def solve(initial_game, final_game):
     print(f"Joué en {number_of_moves} déplacements.")
     return moves_history
 
+
 def plot_hanoi(pegs, ax):
     """Trace l'état actuel des pics de Hanoi.
 
@@ -62,6 +64,9 @@ def plot_hanoi(pegs, ax):
     ax.set_aspect('equal')
     ax.axis('off')
 
+    colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5', '#FF8C33', '#FF3333', '#33FF8C',
+              '#FF33F5']
+
     for peg_index, peg in enumerate(pegs):
         for disk_index, disk in enumerate(peg):
             if disk != 0:
@@ -71,13 +76,16 @@ def plot_hanoi(pegs, ax):
                     (peg_index - disk_width / 2, disk_index * disk_height),
                     disk_width,
                     disk_height,
-                    edgecolor='k',
-                    facecolor='c'
+                    edgecolor='black',
+                    facecolor=colors[disk % len(colors)]  # Utilisation de couleurs flashy
                 )
                 ax.add_patch(rect)
 
     for i in range(3):
         ax.plot([i, i], [0, len(pegs[0]) + 1], 'k-', lw=2)
+
+    ax.set_title("== Tower of Hanoi ==", pad=20, fontweight='bold')
+
 
 def animate_hanoi(move_history, interval=500):
     """Anime la résolution du jeu de Hanoi.
@@ -94,6 +102,7 @@ def animate_hanoi(move_history, interval=500):
 
     ani = animation.FuncAnimation(fig, update, frames=len(move_history), interval=interval, repeat=False)
     plt.show(block=True)
+
 
 if __name__ == '__main__':
     initial_game_state = Jeu_Hanoi()
