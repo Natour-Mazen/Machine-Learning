@@ -51,12 +51,13 @@ def solve(initial_game, final_game):
     return moves_history
 
 
-def plot_hanoi(pegs, ax):
+def plot_hanoi(pegs, ax, num_moves):
     """Trace l'état actuel des pics de Hanoi.
 
     Args:
         pegs (list): Une liste de pics contenant les disques.
         ax (matplotlib.axes.Axes): L'axe sur lequel tracer.
+        num_moves (int): Le nombre de coups effectués.
     """
     ax.clear()
     ax.set_xlim(-1, 3)
@@ -64,8 +65,7 @@ def plot_hanoi(pegs, ax):
     ax.set_aspect('equal')
     ax.axis('off')
 
-    colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5', '#FF8C33', '#FF3333', '#33FF8C',
-              '#FF33F5']
+    colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5', '#FF8C33', '#FF3333', '#33FF8C', '#FF33F5']
 
     for peg_index, peg in enumerate(pegs):
         for disk_index, disk in enumerate(peg):
@@ -77,7 +77,7 @@ def plot_hanoi(pegs, ax):
                     disk_width,
                     disk_height,
                     edgecolor='black',
-                    facecolor=colors[disk % len(colors)] 
+                    facecolor=colors[disk % len(colors)]
                 )
                 ax.add_patch(rect)
 
@@ -85,6 +85,7 @@ def plot_hanoi(pegs, ax):
         ax.plot([i, i], [0, len(pegs[0]) + 1], 'k-', lw=2)
 
     ax.set_title("== Tower of Hanoi ==", pad=20, fontweight='bold')
+    ax.text(-1.5, len(pegs[0]) + 0.5, f"Moves: {num_moves}", ha='center', fontweight='bold')
 
 
 def animate_hanoi(move_history, interval=500):
@@ -97,7 +98,7 @@ def animate_hanoi(move_history, interval=500):
     fig, ax = plt.subplots()
 
     def update(frame):
-        plot_hanoi(move_history[frame].pic, ax)
+        plot_hanoi(move_history[frame].pic, ax, frame + 1)
         return ax.patches
 
     ani = animation.FuncAnimation(fig, update, frames=len(move_history), interval=interval, repeat=False)
@@ -112,7 +113,7 @@ if __name__ == '__main__':
     initial_game_state.pic[0, 2] = 1
 
     final_game_state = Jeu_Hanoi()
-    final_game_state.nombre_palet[1] = 3
+    final_game_state.nombre_palet[2] = 3
     final_game_state.pic[2, 0] = 3
     final_game_state.pic[2, 1] = 2
     final_game_state.pic[2, 2] = 1
