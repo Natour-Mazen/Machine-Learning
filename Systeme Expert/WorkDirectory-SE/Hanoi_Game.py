@@ -15,11 +15,10 @@ class Jeu_Hanoi:
         return ''.join(map(str, self.pic.flatten()))
 
     def pic_vide(self, indice_pic):
-        return self.nombre_palet[indice_pic] == 0
+        return np.all(self.pic[indice_pic] == 0)
 
     def get_pic_top_index(self, indice_pic):
-        # Returns -1 if the peg is empty, otherwise returns the index of the top disk
-        return self.nombre_palet[indice_pic] - 1 if self.nombre_palet[indice_pic] > 0 else -1
+        return self.nombre_palet[indice_pic] - 1
 
     def get_pic_top(self, indice_pic):
         if self.nombre_palet[indice_pic] == 0:
@@ -35,20 +34,10 @@ class Jeu_Hanoi:
 
     def deplacer(self, indice_pic1, indice_pic2):
         palet = self.get_pic_top(indice_pic1)
-        if palet is None:
-            return  # If there's no disk to move, exit the method
-
-        # Remove the disk from the source peg
         self.pic[indice_pic1][self.get_pic_top_index(indice_pic1)] = 0
         self.nombre_palet[indice_pic1] -= 1
-
-        # Determine the destination index on the destination peg
-        destination_index = 0 if self.pic_vide(indice_pic2) else self.get_pic_top_index(indice_pic2) + 1
-
-        # Ensure destination_index is within the valid range
-        if 0 <= destination_index < len(self.pic[indice_pic2]):
-            self.pic[indice_pic2][destination_index] = palet
-            self.nombre_palet[indice_pic2] += 1
+        self.pic[indice_pic2][self.get_pic_top_index(indice_pic2) + 1] = palet
+        self.nombre_palet[indice_pic2] += 1
 
     def effectue_deplacement(self, indice_pic1, indice_pic2):
         if not self.pic_vide(indice_pic1) and self.regle_jeu(indice_pic1, indice_pic2):
@@ -61,17 +50,7 @@ class Jeu_Hanoi:
                 return True
         return False
 
-    def nombre_situation(self):
-        situations = self.get_situation()
-        nombre = 0
-        for i, val in enumerate(situations):
-            if val != '0':
-                nombre += 2 ** i
-        return nombre
-
-
-def situation_non_vue(indice_pic1, indice_pic2, jeu, situation_etudiee):
-    new_jeu = copy.deepcopy(jeu)
-    new_jeu.deplacer(indice_pic1, indice_pic2)
-    situation = new_jeu.nombre_situation()
-    return situation not in situation_etudiee
+    def afficher(self):
+        for i in range(3):
+            print(f"Pic {i}: {self.pic[i]}")
+        print("\n")
