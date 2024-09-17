@@ -3,8 +3,16 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import copy
 
-
 def solve(initial_game, final_game):
+    """Résout le jeu de Hanoi en trouvant une séquence de déplacements.
+
+    Args:
+        initial_game (Jeu_Hanoi): L'état initial du jeu.
+        final_game (Jeu_Hanoi): L'état final du jeu.
+
+    Returns:
+        list: Une liste des états du jeu après chaque déplacement.
+    """
     number_of_moves = 0
     moves_history = []
     visited_situations = set()
@@ -41,8 +49,13 @@ def solve(initial_game, final_game):
     print(f"Joué en {number_of_moves} déplacements.")
     return moves_history
 
-
 def plot_hanoi(pegs, ax):
+    """Trace l'état actuel des pics de Hanoi.
+
+    Args:
+        pegs (list): Une liste de pics contenant les disques.
+        ax (matplotlib.axes.Axes): L'axe sur lequel tracer.
+    """
     ax.clear()
     ax.set_xlim(-1, 3)
     ax.set_ylim(0, len(pegs[0]) + 1)
@@ -66,8 +79,13 @@ def plot_hanoi(pegs, ax):
     for i in range(3):
         ax.plot([i, i], [0, len(pegs[0]) + 1], 'k-', lw=2)
 
-
 def animate_hanoi(move_history, interval=500):
+    """Anime la résolution du jeu de Hanoi.
+
+    Args:
+        move_history (list): Une liste des états du jeu après chaque déplacement.
+        interval (int): L'intervalle de temps entre chaque image en millisecondes.
+    """
     fig, ax = plt.subplots()
 
     def update(frame):
@@ -76,7 +94,6 @@ def animate_hanoi(move_history, interval=500):
 
     ani = animation.FuncAnimation(fig, update, frames=len(move_history), interval=interval, repeat=False)
     plt.show(block=True)
-
 
 if __name__ == '__main__':
     initial_game_state = Jeu_Hanoi()
