@@ -16,6 +16,10 @@ class Jeu_Hanoi:
         """Retourne une représentation en chaîne de caractères de la situation actuelle des pics."""
         return ''.join(map(str, self.pic.flatten()))
 
+    def add_current_situation(self):
+        """Ajoute la situation courante à la liste de situations."""
+        self.situations.append(self.get_situation())
+
     def pic_vide(self, indice_pic):
         """Vérifie si un pic est vide.
 

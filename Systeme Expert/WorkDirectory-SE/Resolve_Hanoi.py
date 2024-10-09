@@ -1,10 +1,10 @@
 import copy
-
+import itertools
 
 ####################################################
 ##      Fonction solve Demandee par le Sujet      ##
 ####################################################
-def solve(initial_game, final_game):
+def solve(initial_game, final_game, moves : list) -> (list, bool):
     """Résout le jeu de Hanoi en trouvant une séquence de déplacements.
 
     Args:
@@ -28,12 +28,7 @@ def solve(initial_game, final_game):
             break
         visited_situations.add(current_situation)
 
-        possible_moves = [(0, 1), (0, 2), (1, 2), (2, 1), (1, 0), (2, 0)]  # Les déplacements possibles, En changeant
-        # L'ordre des éléments de cette liste, on peut changer la stratégie de résolution et donc aller plus vite.
-        # En inversant par example le couple (0,1) avec le couple (0,2) on peut résoudre le problème en 9 déplacements
-        # au lieu de 16 actuellement.
-        # Voici la liste des déplacements le plus optimal possibles : ( à decommenter et à commenter la ligne 31)
-        # possible_moves = [(0, 2), (0, 1), (1, 2), (2, 1), (2, 0), (1, 0)]
+        possible_moves = moves.copy()
 
         if last_move:
             possible_moves.remove((last_move[1], last_move[0]))
@@ -46,7 +41,7 @@ def solve(initial_game, final_game):
                 break
 
         if not move_made:
-            return moves_history
+            return moves_history, False
 
         number_of_moves += 1
         moves_history.append(copy.deepcopy(initial_game))
@@ -54,8 +49,42 @@ def solve(initial_game, final_game):
         initial_game.afficher()
 
     print(f"Joué en {number_of_moves} déplacements.")
-    return moves_history
+    return moves_history, True
 
+####################################################################
+##      Fonction solve pour trouver les meilleurs paramètres      ##
+####################################################################
+def solve_find_best(initial_game, final_game, moves: list) -> (list, int, list):
+    """Test toutes les permutations de mouvements possibles et retourne la meilleure solution.
+
+    Args:
+        initial_game (Jeu_Hanoi): L'état initial du jeu.
+        final_game (Jeu_Hanoi): L'état final du jeu.
+        moves: La liste des coups possibles.
+
+    Returns:
+        tuple: La meilleure séquence des états du jeu et le nombre de coups.
+    """
+    permutations = list(itertools.permutations(moves))  # Toutes les permutations possibles des mouvements
+    moves_list = [list(p) for p in permutations]
+
+    best_situation = []
+    best_number_of_moves = float('inf')  # Fixe un maximum initial pour le nombre de coups
+    best_param = []
+
+    for _moves in moves_list:
+        ig = copy.deepcopy(initial_game)
+        fg = copy.deepcopy(final_game)
+
+        # Solve
+        history, done = solve(ig, fg, _moves)
+
+        if len(history) < best_number_of_moves and done:
+            best_number_of_moves = len(history)
+            best_situation = history
+            best_param = _moves.copy()
+
+    return best_situation, best_number_of_moves, best_param
 
 ####################################################
 ##       Fonction solve Optimal en 7 Coups        ##
