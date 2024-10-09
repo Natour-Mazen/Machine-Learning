@@ -4,15 +4,30 @@ import itertools
 ####################################################
 ##      Fonction solve Demandee par le Sujet      ##
 ####################################################
-def solve(initial_game, final_game, moves : list) -> (list, bool):
+def solve(initial_game, final_game, moves : list) -> list:
+    """Résout le jeu de Hanoi en trouvant une séquence de déplacements.
+
+        Args:
+            initial_game (Jeu_Hanoi): L'état initial du jeu.
+            final_game (Jeu_Hanoi): L'état final du jeu.
+            moves : Les coups possibles.
+        Returns:
+            list: Une liste des états du jeu après chaque déplacement.
+        """
+    history, finished = _solve(initial_game, final_game, moves)
+    return history
+
+def _solve(initial_game, final_game, moves : list) -> (list, bool):
     """Résout le jeu de Hanoi en trouvant une séquence de déplacements.
 
     Args:
         initial_game (Jeu_Hanoi): L'état initial du jeu.
         final_game (Jeu_Hanoi): L'état final du jeu.
+        moves : Les coups possibles.
 
     Returns:
         list: Une liste des états du jeu après chaque déplacement.
+        bool: Une boolean pour savoir si le jeu est terminé ou pas
     """
     number_of_moves = 0
     moves_history = []
@@ -77,7 +92,7 @@ def solve_find_best(initial_game, final_game, moves: list) -> (list, int, list):
         fg = copy.deepcopy(final_game)
 
         # Solve
-        history, done = solve(ig, fg, _moves)
+        history, done = _solve(ig, fg, _moves)
 
         if len(history) < best_number_of_moves and done:
             best_number_of_moves = len(history)
