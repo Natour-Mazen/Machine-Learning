@@ -28,6 +28,19 @@ if __name__ == '__main__':
     # animate_hanoi(move_history)
 
     # ---------------------------------------- #
+    # Pour trouver les meilleurs paramètres avec les déplacements donnés par le sujet :
+
+    # moves_possible = [(0, 1), (1, 2), (2, 1), (1, 0)]
+    # best_moves, number_of_moves, best_param = solve_find_best(initial_game_state, final_game_state, moves_possible)
+    #
+    # print("Nombre de coups pour la meilleure solution : ", number_of_moves)
+    # print("Meilleurs paramètres : ", best_param)
+    # print("Coups fait : ")
+    # for m in best_moves:
+    #     print(m)
+    # animate_hanoi(best_moves)
+
+    # ---------------------------------------- #
     # Pour trouver les meilleurs paramètres avec tous les coups possibles :
 
     # moves_possible = [(0, 1), (1, 2), (2, 1), (1, 0), (2, 0), (0, 2)]
