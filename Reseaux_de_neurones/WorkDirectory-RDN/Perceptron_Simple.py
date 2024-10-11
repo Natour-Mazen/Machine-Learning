@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+from Plot_Display import plot_with_class
 
 
 # Simple Perceptron.
@@ -21,36 +21,6 @@ def perceptron_simple(inputs: np.array, weights: np.array, activation_function: 
     return np.sign(result) if (activation_function == 0) else np.tanh(result)
 
 
-def plot_with_class(data_points, weights, classes, title, min_y, max_y):
-    """
-    Plot data points with classification results.
-
-    Parameters:
-    data_points (np.array): The input data points.
-    weights (np.array): The synaptic weights of the neuron.
-    classes (list): The classification results for each input.
-    title (str): The title of the plot.
-    min_y (float): The minimum y-axis value for the plot.
-    max_y (float): The maximum y-axis value for the plot.
-
-    Returns:
-    plt: The plot object.
-    """
-    x_values = np.linspace(min_y, max_y)
-    y_values = (weights[0] + x_values * weights[1]) / (-weights[2])
-
-    plt.plot(x_values, y_values)
-    plt.title(title)
-    plt.scatter(data_points[:, 0], data_points[:, 1], c=classes)
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.grid()
-    plt.xlim(min_y, max_y)
-    plt.ylim(min_y, max_y)
-
-    return plt
-
-
 if __name__ == '__main__':
     print("1.1 - Classification by simple perceptron on OR dataset")
     weights_OR = np.array([-0.5, 1, 1])
@@ -64,5 +34,3 @@ if __name__ == '__main__':
         "1.1 - Classification by simple perceptron on OR dataset",
         -1, 2
     ).show()
-
-    print("1.2.1 - Widrow-hoff learning programming")
