@@ -8,3 +8,7 @@ By AL NATOUR Mazen and HERVOUET Léo.
 Run the command `pip install -r requirements.txt` to install all the packages needed for this project. 
 
 Run the command `pip freeze > requirements.txt` to get this file.  
+
+## Usage
+
+Run the command `python main.py` to start the program.
