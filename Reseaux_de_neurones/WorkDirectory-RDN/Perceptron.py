@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def perceptron_simple(x: list, w: np.ndarray, active: int = 0) -> list:
+def perceptron_simple(x: list, w: np.ndarray, active: int) -> list:
     """
      Perceptron simple.
     :param x: Synaptic weights of the neuron, vec3.
