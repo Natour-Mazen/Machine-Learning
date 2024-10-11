@@ -85,5 +85,5 @@ def run_widrow_learning(data_file, title, epochs, batch_size):
 
 if __name__ == '__main__':
     print("1.2.1 - Widrow-hoff learning programming")
-    run_widrow_learning('ressources/p2_d1.txt', "1.2.1 Widrow-hoff - Data_p2_d1", 500, 25)
-    run_widrow_learning('ressources/p2_d2.txt', "1.2.1 Widrow-hoff - Data_p2_d2", 500, 25)
+    run_widrow_learning('ressources/p2_d1.txt', "1.2.1 Learning Widrow-hoff on Data_p2_d1", 500, 25)
+    run_widrow_learning('ressources/p2_d2.txt', "1.2.1 Learning Widrow-hoff on Data_p2_d2", 500, 25)
