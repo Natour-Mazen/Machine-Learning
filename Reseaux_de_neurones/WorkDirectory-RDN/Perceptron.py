@@ -11,7 +11,5 @@ def perceptron_simple(x: list, w: np.ndarray, active: int) -> list:
     """
     seuil = w[0]
     dot_product = np.dot(x, w[1:])
-    active = dot_product + seuil
-    return np.sign(x) if (active == 0) else np.tanh(x)
-
-
+    res = dot_product + seuil
+    return np.sign(res) if (active == 0) else np.tanh(res)
