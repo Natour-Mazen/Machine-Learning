@@ -51,6 +51,7 @@ def plot_with_class(data_points, weights, classes, title, min_y, max_y):
 
 
 if __name__ == '__main__':
+    print("1.1 - Classification by simple perceptron on OR dataset")
     weights_OR = np.array([-0.5, 1, 1])
     the_data_points = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 
