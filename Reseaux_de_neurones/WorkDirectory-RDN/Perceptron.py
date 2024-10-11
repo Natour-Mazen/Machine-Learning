@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# Simple Perceptron.
 def perceptron_simple(inputs: np.array, weights: np.array, activation_function: int) -> list:
     """
     Simple Perceptron.
@@ -50,16 +51,38 @@ def plot_with_class(data_points, weights, classes, title, min_y, max_y):
     return plt
 
 
+# =========================================================================
+
+# Widrow-hof Learning.
+def apprentissage_widrow(x: np.ndarray, yd: np.array, epoch: int, batch_size: int) -> (np.array, np.array):
+    """
+    Widrow-hof learning.
+
+    :param x: Input values, mat[2, n]
+    :param yd: Result for the input values, vec[n].
+    :param epoch: The number of loop on the training set.
+    :param batch_size: The number of traited values before updating the weights.
+    :return:
+    """
+    pass
+
+
+# f(x) = activation function
+# f'(x) = 1 - f(x)^2
+# new value = old value - learningRate * (-(targetValue - f(w * x) * f'(w * x) * x(j)))
+
 if __name__ == '__main__':
     print("1.1 - Classification by simple perceptron on OR dataset")
     weights_OR = np.array([-0.5, 1, 1])
     the_data_points = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 
     results_OR = perceptron_simple(the_data_points, weights_OR, 0)
-    print(results_OR)
+    print("results_OR : ", results_OR)
 
     plot_with_class(
         the_data_points, weights_OR, results_OR,
         "1.1 - Classification by simple perceptron on OR dataset",
         -1, 2
     ).show()
+
+    print("1.2.1 - Widrow-hoff learning programming")
