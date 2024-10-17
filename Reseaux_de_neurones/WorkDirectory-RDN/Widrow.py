@@ -52,18 +52,18 @@ def apprentissage_widrow(inputs, targets, epochs, batch_size) -> (list, list):
 
         # For all the elements, in input_vec we have an array with 2 values : [v1, v2].
         for i, input_vec in enumerate(shuffle_inputs):
-            output: float = perceptron_simple(input_vec, weights, 1)
+            reel_output: float = perceptron_simple(input_vec, weights, 1)
 
             # We transform the output between -1 and 1 in just -1 or 1.
-            output = np.sign(output)
+            output = np.sign(reel_output)
 
             # We insert 1. at the start of input vector because we need a value to calculate the first weight.
             input_vec = np.insert(input_vec, 0, 1.)
 
             # The value pass to the activation function.
-            value_activation: float = np.dot(temp_weights, input_vec)
+            value_activation: float = np.dot(weights, input_vec)
             # Value through the tanh function.
-            tanh_result: float = np.tanh(value_activation)
+            tanh_result: float = reel_output
             # Value through the derivative of the tanh function.
             tanh_derive_result: float = tanhDerive(value_activation)
 
@@ -137,15 +137,15 @@ if __name__ == '__main__':
 
     # To see in average the number of epoch to have the best solution.
 
-    # avgError: int = 0
-    # bestErrorAvg: float = 0.
-    # size : int = 100
-    # for i in range(size):
-    #     nb_error, best_error = run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 10, 8)
-    #     avgError += nb_error
-    #     bestErrorAvg += best_error
-    # print("avgError: ", avgError / size)
-    # print("bestErrorAvg: ", bestErrorAvg / size)
+    avgError: int = 0
+    bestErrorAvg: float = 0.
+    size : int = 100
+    for i in range(size):
+        nb_error, best_error = run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 10, 1)
+        avgError += nb_error
+        bestErrorAvg += best_error
+    print("avgError: ", avgError / size)
+    print("bestErrorAvg: ", bestErrorAvg / size)
     # ~4 epoch to have the best solution.
 
     # To see in average the best lost that we can get.
