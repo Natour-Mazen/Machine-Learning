@@ -3,7 +3,7 @@ from Plot_Display import plot_with_class
 
 
 # Simple Perceptron.
-def perceptron_simple(inputs: np.array, weights: np.array, activation_function: int) -> list:
+def perceptron_simple(inputs: np.array, weights: np.array, activation_function: int) -> float:
     """
     Simple Perceptron.
 
@@ -13,7 +13,7 @@ def perceptron_simple(inputs: np.array, weights: np.array, activation_function: 
     activation_function (int): Selector for the activation function (0 for sign, 1 for tanh).
 
     Returns:
-    list: The activation result for each input.
+    float: The activation result for each input.
     """
     threshold: float = weights[0]
     dot_product: float = np.dot(inputs, weights[1:])
