@@ -16,7 +16,7 @@ def tanhDerive(value: float) -> float:
 
 
 # Widrow-hof Learning.
-def apprentissage_widrow(inputs, targets, epochs, batch_size):
+def apprentissage_widrow(inputs, targets, epochs, batch_size) -> (list, list):
     """
     Widrow-hof learning.
 
@@ -24,7 +24,7 @@ def apprentissage_widrow(inputs, targets, epochs, batch_size):
     :param targets (yd) :  Result for the input values, vec[n].
     :param epochs: The number of loop on the training set.
     :param batch_size: The number of traited values before updating the weights.
-    :return:
+    :return: The list of the final weights and the list of the errors.
     """
     weights = np.random.randn(3)
     errors = []
@@ -100,14 +100,14 @@ def apprentissage_widrow(inputs, targets, epochs, batch_size):
     return weights, errors
 
 
-def run_widrow_learning(data_file, title, epochs, batch_size):
+def run_widrow_learning(data_file, title, epochs, batch_size) -> (int, float):
     """
     Run the Widrow-hoff learning.
     :param data_file: the data file
     :param title: title of the plot
     :param epochs: epochs number for the learning
     :param batch_size: batch size for the learning
-    :return: None
+    :return: The number of errors to have the best solution and the best error obtained.
     """
     global DataSetName
     data = np.loadtxt(data_file)
@@ -125,12 +125,42 @@ def run_widrow_learning(data_file, title, epochs, batch_size):
 
     plot_error_curve(errors, data_file)
 
-    plt.title(f"Errors depending on the number of epochs - {data_file}")
-    plt.plot(errors)
-    plt.show()
+    #plt.title(f"Errors depending on the number of epochs - {data_file}")
+    #plt.plot(errors)
+    #plt.show()
+
+    return len(errors), errors[-1]
 
 
 if __name__ == '__main__':
     print("1.2.1 - Widrow-hoff learning programming")
+
+    # To see in average the number of epoch to have the best solution.
+
+    # avgError: int = 0
+    # bestErrorAvg: float = 0.
+    # size : int = 100
+    # for i in range(size):
+    #     nb_error, best_error = run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 10, 8)
+    #     avgError += nb_error
+    #     bestErrorAvg += best_error
+    # print("avgError: ", avgError / size)
+    # print("bestErrorAvg: ", bestErrorAvg / size)
+    # ~4 epoch to have the best solution.
+
+    # To see in average the best lost that we can get.
+
+    # avgError : int = 0
+    # bestErrorAvg : float = 0.
+    # size: int = 10
+    # for i in range(size):
+    #     nb_error, best_error = run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 50, 8)
+    #     avgError += nb_error
+    #     bestErrorAvg += best_error
+    # print("avgError: ", avgError / size)
+    # print("bestErrorAvg: ", bestErrorAvg / size)
+    # ~50 epochs to have the best solution (error at 8).
+
     run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 10, 8)
-    run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 15, 10)
+    run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 50, 8)
+
