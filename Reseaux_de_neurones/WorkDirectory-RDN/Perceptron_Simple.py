@@ -32,5 +32,5 @@ if __name__ == '__main__':
     plot_with_class(
         the_data_points, weights_OR, results_OR,
         "1.1 - Classification by simple perceptron on OR dataset",
-        -1, 2
+        -1, 2,0, 16
     ).show()

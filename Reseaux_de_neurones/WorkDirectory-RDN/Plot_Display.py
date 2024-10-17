@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def plot_with_class(data_points, weights, classes, title, min_y, max_y, space=0):
+def plot_with_class(data_points, weights, classes, title, min_y, max_y, space=0, font_size=10):
     """
     Plot data points with classification results.
 
@@ -21,7 +21,7 @@ def plot_with_class(data_points, weights, classes, title, min_y, max_y, space=0)
     y_values = (weights[0] + x_values * weights[1]) / (-weights[2])
 
     plt.plot(x_values, y_values)
-    plt.title(title)
+    plt.title(title, fontsize=font_size)
     plt.scatter(data_points[:, 0], data_points[:, 1], c=classes)
     plt.xlabel('X')
     plt.ylabel('Y')
@@ -32,7 +32,7 @@ def plot_with_class(data_points, weights, classes, title, min_y, max_y, space=0)
     return plt
 
 
-def plot_multiple(data_list, titles):
+def plot_multiple(data_list, titles, max_plots_per_figure=4):
     """
     Plot multiple data sets with classification results.
 
@@ -46,12 +46,12 @@ def plot_multiple(data_list, titles):
     Returns:
     None
     """
-    max_plots_per_figure = 4
+
     num_plots = len(data_list)
     num_figures = (num_plots + max_plots_per_figure - 1) // max_plots_per_figure
 
     for fig_num in range(num_figures):
-        plt.figure(figsize=(20, 16))  # Increase figure size
+        plt.figure(figsize=(16, 19))  # Increase figure size
         start_idx = fig_num * max_plots_per_figure
         end_idx = min(start_idx + max_plots_per_figure, num_plots)
 
@@ -61,5 +61,6 @@ def plot_multiple(data_list, titles):
             plot_with_class(inputs, weights, targets, titles[i], -1, 2, 3)
             plt.grid(True)
 
-        plt.tight_layout(pad=10.0)  # Increase padding between subplots
+        plt.tight_layout(pad=100.0)  # Increase padding between subplots
+        plt.subplots_adjust(wspace=0.6, hspace=0.6)  # Increase spacing between subplots
         plt.show()
