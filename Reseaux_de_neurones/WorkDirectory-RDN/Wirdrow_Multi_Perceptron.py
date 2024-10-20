@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     plot_training_set(inputs, targets)
 
-    the_weights_hidden, the_weights_output, the_cumulative_errors = multiperceptron_widrow(inputs, targets, 10000, 4)
+    the_weights_hidden, the_weights_output, the_cumulative_errors = multiperceptron_widrow(inputs, targets, 20000, 4)
 
     print('x = [0, 0] | y =', get_prediction([0, 0], the_weights_hidden, the_weights_output))
     print('x = [0, 1] | y =', get_prediction([0, 1], the_weights_hidden, the_weights_output))
