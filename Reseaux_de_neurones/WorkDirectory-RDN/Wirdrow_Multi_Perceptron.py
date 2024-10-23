@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from Multi_Perceptron import multi_layer_perceptron
-from Plot_Display import plot_error_curve, plot_decision_boundary
+from Plot_Display import plot_error_curve
 
 
 def sigmoid_derivative(x):
@@ -45,7 +45,7 @@ def multiperceptron_widrow(inputs, targets, epochs, batch_size, learning_rate=0.
                 delta_weights_output = np.zeros(3)
 
         error = round(cumulative_errors[epoch], 3)
-        print(f'Epoch {epoch + 1}/{epochs} - Error: {error}')
+        #print(f'Epoch {epoch + 1}/{epochs} - Error: {error}')
         if error < 0.01:
             break
 
@@ -62,6 +62,22 @@ def plot_training_set(inputs, targets):
 
 def get_prediction(input_coords, weights_hidden, weights_output):
     return round(multi_layer_perceptron(np.array(input_coords), weights_hidden, weights_output)[1])
+
+
+def plot_decision_boundary(weights_hidden, weights_output, data_points):
+    x = np.linspace(-2, 2)
+    y1 = (weights_hidden[0, 0] + x * weights_hidden[1, 0]) / (-weights_hidden[2, 0])
+    y2 = (weights_hidden[0, 1] + x * weights_hidden[1, 1]) / (-weights_hidden[2, 1])
+    y3 = (weights_output[0] + x * weights_output[1]) / (-weights_output[2])
+
+    plt.plot(x, y1)
+    plt.plot(x, y2)
+    plt.plot(x, y3)
+    plt.scatter(data_points[:, 0], data_points[:, 1])
+    plt.legend(['Hidden Neuron 1', 'Hidden Neuron 2', 'Output Neuron', 'Data Points'])
+    plt.title("Decision Boundary Plot")
+    plt.grid()
+    plt.show()
 
 
 if __name__ == "__main__":

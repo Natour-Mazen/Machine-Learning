@@ -64,6 +64,7 @@ def plot_multiple(data_list, titles, max_plots_per_figure=4):
         plt.subplots_adjust(wspace=0.6, hspace=0.6)  # Increase spacing between subplots
         plt.show()
 
+
 def plot_error_curve(cumulative_errors, data_file):
     plt.plot(cumulative_errors)
     plt.title(f"Error curve during training - {data_file}")
@@ -72,16 +73,4 @@ def plot_error_curve(cumulative_errors, data_file):
     plt.show()
 
 
-def plot_decision_boundary(weights_hidden, weights_output, data_points):
-    x = np.linspace(-2, 2)
-    y1 = (weights_hidden[0, 0] + x * weights_hidden[1, 0]) / (-weights_hidden[2, 0])
-    y2 = (weights_hidden[0, 1] + x * weights_hidden[1, 1]) / (-weights_hidden[2, 1])
-    y3 = (weights_output[0] + x * weights_output[1]) / (-weights_output[2])
 
-    plt.plot(x, y1)
-    plt.plot(x, y2)
-    plt.plot(x, y3)
-    plt.scatter(data_points[:, 0], data_points[:, 1])
-    plt.legend(['P1', 'P2', 'P3', 'Data'])
-    plt.grid()
-    plt.show()
