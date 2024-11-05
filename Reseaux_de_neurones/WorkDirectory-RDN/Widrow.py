@@ -161,6 +161,7 @@ if __name__ == '__main__':
     # print("bestErrorAvg: ", bestErrorAvg / size)
     # ~15 epochs (50 batch_size) to have the best solution (error at 8).
 
+
     run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 100, 1)
     run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 20, 50)
 
