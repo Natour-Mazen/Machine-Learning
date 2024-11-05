@@ -133,10 +133,31 @@ def display_confusion_matrix(name='', Y_test=None, Y_predict=None):
     plt.show()
 
 
-def main():
+def process_descriptor(descriptor, Target, Labels):
     """
-    Main function to run the entire process.
+    Process a single descriptor.
     """
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        descriptor[1], Target, test_size=0.2, random_state=42, stratify=Labels
+    )
+    model = build_model()
+    history = train_model(model, X_train, Y_train)
+    test_loss, test_acc, Y_predict = evaluate_model(model, X_test, Y_test)
+    print(f"Descriptor {descriptor[0]} : Loss = {test_loss} | Accuracy = {test_acc}")
+    display_loss_accuracy(name=descriptor[0], history=history, test_loss=test_loss, test_acc=test_acc)
+    display_confusion_matrix(name=descriptor[0], Y_test=Y_test, Y_predict=Y_predict)
+    k = 5
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, np.argmax(Y_train, axis=1))
+
+    # Prédictions et évaluation
+    y_knn_pred = knn.predict(X_test)
+    knn_accuracy = accuracy_score(np.argmax(Y_test, axis=1), y_knn_pred)
+    print(f"KPPV accuracy (k={k}): {knn_accuracy}")
+    return test_acc
+
+
+if __name__ == "__main__":
     X_train, X_test, Y_train, Y_test, Labels, Target = prepare_data()
     model = build_model()
     history = train_model(model, X_train, Y_train)
@@ -152,30 +173,8 @@ def main():
         ('Concatenated', load_descriptor(concatenate=True))
     ]
 
-    combination_accuracies = []
-
-    for descriptor in DESCRIPTORS:
-        X_train, X_test, Y_train, Y_test = train_test_split(
-            descriptor[1], Target, test_size=0.2, random_state=42, stratify=Labels
-        )
-        Model = build_model()
-        history = train_model(Model, X_train, Y_train)
-        test_loss, test_acc, Y_predict = evaluate_model(Model, X_test, Y_test)
-        combination_accuracies.append(test_acc)
-        print(f"Descriptor {descriptor[0]} : Loss = {test_loss} | Accuracy = {test_acc}")
-        display_loss_accuracy(name=descriptor[0], history=history, test_loss=test_loss, test_acc=test_acc)
-        display_confusion_matrix(name=descriptor[0], Y_test=Y_test, Y_predict=Y_predict)
-        k = 5
-        knn = KNeighborsClassifier(n_neighbors=k)
-        knn.fit(X_train, np.argmax(Y_train, axis=1))
-
-        # Prédictions et évaluation
-        y_knn_pred = knn.predict(X_test)
-        knn_accuracy = accuracy_score(np.argmax(Y_test, axis=1), y_knn_pred)
-        print(f"KPPV accuracy (k={k}): {knn_accuracy}")
+    combination_accuracies = [process_descriptor(descriptor, Target, Labels) for descriptor in DESCRIPTORS]
 
     print(f"Best descriptor : {DESCRIPTORS[combination_accuracies.index(max(combination_accuracies))][0]}")
 
 
-if __name__ == "__main__":
-    main()
