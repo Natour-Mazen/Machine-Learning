@@ -61,7 +61,7 @@ def plot_multiple(data_list, titles, max_plots_per_figure=4):
             plot_with_class(inputs, weights, targets, titles[i], -1, 2, 3)
             plt.grid(True)
 
-        plt.subplots_adjust(wspace=0.6, hspace=0.6)  # Increase spacing between subplots
+        plt.subplots_adjust(wspace=0.1, hspace=0.1)  # Increase spacing between subplots
         plt.show()
 
 

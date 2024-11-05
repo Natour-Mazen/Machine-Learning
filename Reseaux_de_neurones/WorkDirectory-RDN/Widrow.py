@@ -137,30 +137,30 @@ if __name__ == '__main__':
 
     # To see in average the number of epoch to have the best solution.
 
-    # avgError: int = 0
+    # avgEpochs: int = 0
     # bestErrorAvg: float = 0.
     # size : int = 100
     # for i in range(size):
-    #     nb_error, best_error = run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 10, 1)
-    #     avgError += nb_error
+    #     nb_epoch, best_error = run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 100, 1)
+    #     avgEpochs += nb_epoch
     #     bestErrorAvg += best_error
-    # print("avgError: ", avgError / size)
+    # print("avgEpochs: ", avgEpochs / size)
     # print("bestErrorAvg: ", bestErrorAvg / size)
     # ~4 epoch (1 batch_size) to have the best solution.
 
     # To see in average the best lost that we can get.
 
-    # avgError : int = 0
+    # avgEpochs : int = 0
     # bestErrorAvg : float = 0.
-    # size: int = 10
+    # size: int = 1
     # for i in range(size):
-    #     nb_error, best_error = run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 15, 50)
-    #     avgError += nb_error
+    #     nb_epoch, best_error = run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 15, 50)
+    #     avgEpochs += nb_epoch
     #     bestErrorAvg += best_error
-    # print("avgError: ", avgError / size)
+    # print("avgEpochs: ", avgEpochs / size)
     # print("bestErrorAvg: ", bestErrorAvg / size)
     # ~15 epochs (50 batch_size) to have the best solution (error at 8).
 
-    #run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 15, 1)
-    #run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 20, 50)
+    run_widrow_learning('ressources/p2_d1.txt', "1.2.1 - Widrow on Data_p2_d1", 100, 1)
+    run_widrow_learning('ressources/p2_d2.txt', "1.2.1 - Widrow on Data_p2_d2", 20, 50)
 
