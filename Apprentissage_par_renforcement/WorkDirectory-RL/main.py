@@ -1,4 +1,5 @@
 from Enums.Moves import Moves
+from Enums.Rewards import Rewards
 from Q_learning import q_learning
 from RLGame import RLGame
 from Deep_Q_learning import play_optimal_policy, build_model, update_model, choose_action
@@ -9,7 +10,7 @@ if __name__ == '__main__':
     gamma = 0.5
     epsilon = 0.1
     episodes = 1000
-    rewards_q_learning = {'normal': 0, 'dragon': -2, 'end': 2}
+    rewards_q_learning = {'normal': Rewards.NORMAL.value, 'dragon': Rewards.ENEMIES.value, 'end': Rewards.END.value}
 
     # Initialize environment
     env = RLGame.define_basic_game()
