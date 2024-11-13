@@ -2,11 +2,10 @@ import numpy as np
 import pandas as pd
 from keras import Sequential
 from keras.src.layers import Dense, Dropout
-from keras.src.optimizers import Adam
-from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
+from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
+from Plot_Display import display_loss_accuracy, display_confusion_matrix
 
 # Path to the data file
 WANG_PATH = "./ressources/WangSignatures.xlsx"
@@ -89,48 +88,10 @@ def display_results(history, test_loss, test_acc, Y_test, Y_predict):
     Display the training loss, accuracy curves, and confusion matrix.
     """
     display_loss_accuracy(history=history, test_loss=test_loss, test_acc=test_acc)
-    display_confusion_matrix(Y_test=Y_test, Y_predict=Y_predict)
+    display_confusion_matrix(Y_test=Y_test, Y_predict=Y_predict, categories=CATEGORIES)
 
 
-def display_loss_accuracy(name='', history=None, test_loss=None, test_acc=None):
-    """
-    Display training loss and accuracy curves.
-    """
-    loss = round(test_loss, 2)
-    acc = round(test_acc * 100, 2)
-    title_01 = f"Loss: {loss}"
-    title_02 = f"Accuracy: {acc}"
-    if name:
-        title_01 = f"{name} - " + title_01
-        title_02 = f"{name} - " + title_02
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-    ax1.set_title(title_01, fontsize=10)
-    ax1.plot(history.history['loss'], 'r--', label='Loss of training data')
-    ax1.plot(history.history['val_loss'], 'r', label='Loss of validation data')
-    ax1.legend()
-    ax2.set_title(title_02, fontsize=10)
-    ax2.plot(history.history['accuracy'], 'g--', label='Accuracy of training data')
-    ax2.plot(history.history['val_accuracy'], 'g', label='Accuracy of validation data')
-    ax2.legend()
-    plt.show()
 
-
-def display_confusion_matrix(name='', Y_test=None, Y_predict=None):
-    """
-    Display the confusion matrix of the model.
-    """
-    title = 'Confusion matrix of the model'
-    if name:
-        title = f"{name} - " + title
-    ConfusionMatrixDisplay(
-        confusion_matrix=confusion_matrix(
-            np.argmax(Y_test, axis=1),
-            np.argmax(Y_predict, axis=1)
-        ),
-        display_labels=[c[0] for c in CATEGORIES]
-    ).plot()
-    plt.title(title)
-    plt.show()
 
 
 def process_descriptor(descriptor, Target, Labels):
@@ -145,7 +106,7 @@ def process_descriptor(descriptor, Target, Labels):
     test_loss, test_acc, Y_predict = evaluate_model(model, X_test, Y_test)
     print(f"Descriptor {descriptor[0]} : Loss = {test_loss} | Accuracy = {test_acc}")
     display_loss_accuracy(name=descriptor[0], history=history, test_loss=test_loss, test_acc=test_acc)
-    display_confusion_matrix(name=descriptor[0], Y_test=Y_test, Y_predict=Y_predict)
+    display_confusion_matrix(name=descriptor[0], Y_test=Y_test, Y_predict=Y_predict, categories=CATEGORIES)
     k = 5
     knn = KNeighborsClassifier(n_neighbors=k)
     knn.fit(X_train, np.argmax(Y_train, axis=1))
@@ -157,13 +118,19 @@ def process_descriptor(descriptor, Target, Labels):
     return test_acc
 
 
-if __name__ == "__main__":
+
+def run_general_model():
     X_train, X_test, Y_train, Y_test, Labels, Target = prepare_data()
     model = build_model()
     history = train_model(model, X_train, Y_train)
     test_loss, test_acc, Y_predict = evaluate_model(model, X_test, Y_test)
     display_results(history, test_loss, test_acc, Y_test, Y_predict)
+    return Labels, Target, history, Y_predict
 
+
+if __name__ == "__main__":
+
+    Labels, Target, _, _ = run_general_model()
     DESCRIPTORS = [
         ('PHOG', load_descriptor(concatenate=False)),
         ('JCD', load_descriptor(sheet=1, concatenate=False)),

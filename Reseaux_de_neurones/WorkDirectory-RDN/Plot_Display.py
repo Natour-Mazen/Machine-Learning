@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
 
 def plot_with_class(data_points, weights, classes, title, min_y, max_y, space=0, font_size=10):
@@ -72,5 +73,45 @@ def plot_error_curve(cumulative_errors, data_file):
     plt.ylabel("Cumulative Error")
     plt.show()
 
+
+def display_loss_accuracy(name='', history=None, test_loss=None, test_acc=None):
+    """
+    Display training loss and accuracy curves.
+    """
+    loss = round(test_loss, 2)
+    acc = round(test_acc * 100, 2)
+    title_01 = f"Loss: {loss}"
+    title_02 = f"Accuracy: {acc}"
+    if name:
+        title_01 = f"{name} - " + title_01
+        title_02 = f"{name} - " + title_02
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    ax1.set_title(title_01, fontsize=10)
+    ax1.plot(history.history['loss'], 'r--', label='Loss of training data')
+    ax1.plot(history.history['val_loss'], 'r', label='Loss of validation data')
+    ax1.legend()
+    ax2.set_title(title_02, fontsize=10)
+    ax2.plot(history.history['accuracy'], 'g--', label='Accuracy of training data')
+    ax2.plot(history.history['val_accuracy'], 'g', label='Accuracy of validation data')
+    ax2.legend()
+    plt.show()
+
+
+def display_confusion_matrix(name='', Y_test=None, Y_predict=None, categories=None):
+    """
+    Display the confusion matrix of the model.
+    """
+    title = 'Confusion matrix of the model'
+    if name:
+        title = f"{name} - " + title
+    ConfusionMatrixDisplay(
+        confusion_matrix=confusion_matrix(
+            np.argmax(Y_test, axis=1),
+            np.argmax(Y_predict, axis=1)
+        ),
+        display_labels=[c[0] for c in categories]
+    ).plot()
+    plt.title(title)
+    plt.show()
 
 
