@@ -1,8 +1,8 @@
 import numpy as np
 
-JAIL_REWARD = 1     # Reward for the jail cell
-DRAGON_REWARD = -10  # Reward for the dragon cell
-NORMAL_REWARD = 0   # Reward for the normal cell
+NORMAL_REWARD = -1     # Reward for the jail cell
+ENNEMIES_REWARD = -10  # Reward for the dragon cell
+END_REWARD = 0   # Reward for the normal cell
 
 
 class Game:
@@ -50,13 +50,13 @@ class Game:
 
         # Check if the new position is a dragon, the end, or neutral
         if new_position in self.dragons:
-            reward = DRAGON_REWARD  # Negative reward for a dragon
+            reward = ENNEMIES_REWARD  # Negative reward for a dragon
             game_over = True
         elif new_position == self.end_pos:
-            reward = 10  # Positive reward for reaching the end
+            reward = END_REWARD  # Positive reward for reaching the end
             game_over = True
         else:
-            reward = -1  # Standard reward for a regular move
+            reward = NORMAL_REWARD  # Standard reward for a regular move
             game_over = False
 
         # Update player position
