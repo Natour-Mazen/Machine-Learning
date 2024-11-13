@@ -6,7 +6,7 @@ from keras.src.layers import Dense
 from Enums.Moves import Moves
 
 def play_optimal_policy(env, Q, rewards):
-    state = env.reset()
+    state = env.reset_player_position()
     done = False
     total_reward = 0
     while not done:

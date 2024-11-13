@@ -8,15 +8,17 @@ if __name__ == '__main__':
     # Parameters for Q-learning
     alpha = 0.9
     gamma = 0.5
-    epsilon = 0.1
-    episodes = 1000
-    rewards_q_learning = {'normal': Rewards.NORMAL.value, 'dragon': Rewards.ENEMIES.value, 'end': Rewards.END.value}
+    episodes = 40
+    rewards_q_learning = {'normal': Rewards.NORMAL.value,
+                          'dragon': Rewards.ENEMIES.value,
+                          'end': Rewards.END.value,
+                          'wall': Rewards.WALL.value}
 
     # Initialize environment
     env = RLGame.define_basic_game()
 
     # Run Q-learning
-    Q = q_learning(env, episodes, alpha, gamma, epsilon, rewards_q_learning)
+    Q = q_learning(env, episodes, alpha, gamma, rewards_q_learning)
 
     # Parameters for Deep Q-learning
     # alpha = 0.9

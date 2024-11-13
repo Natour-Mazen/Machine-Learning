@@ -2,6 +2,7 @@
 from enum import Enum
 
 class Rewards(Enum):
-    NORMAL = 5
+    NORMAL = -1
     ENEMIES = -10
-    END = 0
+    END = 50
+    WALL = -2
