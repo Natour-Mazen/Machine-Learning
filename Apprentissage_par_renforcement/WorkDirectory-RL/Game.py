@@ -4,8 +4,12 @@ NORMAL_REWARD = -1     # Reward for the jail cell
 ENNEMIES_REWARD = -10  # Reward for the dragon cell
 END_REWARD = 0   # Reward for the normal cell
 
+PLAYER_SYMBOL = 3  # Player's symbol
+DRAGON_SYMBOL = -1  # Dragon's symbol
+END_SYMBOL = 2  # End cell's symbol
 
-class Game:
+
+class RLGame:
     def __init__(self, width, height, start_pos, end_pos, dragons):
         """
         Initializes the game board and special elements.
@@ -24,9 +28,9 @@ class Game:
         """
         board = np.zeros((self.height, self.width))
         board[self.start_pos] = 1  # Start cell
-        board[self.end_pos] = 2  # End cell
+        board[self.end_pos] = END_SYMBOL  # End cell
         for dragon in self.dragons:
-            board[dragon] = -1  # Cells with dragons
+            board[dragon] = DRAGON_SYMBOL  # Cells with dragons
         return board
 
     def apply_action(self, action):
@@ -73,11 +77,33 @@ class Game:
 
     def display_board(self):
         """
-        Displays the game board with the player's current position.
+        Displays the game board with the player's current position using symbols.
         """
         board = self.board.copy()
         x, y = self.player_position
-        board[x, y] = 3  # Mark the player
-        print(board)
+        board[x, y] = PLAYER_SYMBOL  # Mark the player
+
+        symbol_map = {
+            0: '.',  # Empty cell
+            1: 'S',  # Start cell
+            END_SYMBOL: 'E',  # End cell
+            DRAGON_SYMBOL: 'D',  # Dragon cell
+            PLAYER_SYMBOL: 'P'  # Player cell
+        }
+
+        for row in board:
+            print(' '.join(symbol_map[int(cell)] for cell in row))
+
+    @staticmethod
+    def define_basic_game():
+        """
+        Defines a basic game with a 4x4 board and a several dragons.
+        """
+        width = 4
+        height = 4
+        start_pos = (0, 0)
+        end_pos = (3, 3)
+        dragons = [(1, 0), (1, 2), (2,3), (3,1)]
+        return RLGame(width, height, start_pos, end_pos, dragons)
 
 
