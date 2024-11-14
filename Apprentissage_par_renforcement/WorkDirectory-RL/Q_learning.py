@@ -38,7 +38,7 @@ def q_learning(env, episodes, alpha, gamma, rewards):
     for episode in range(episodes):
         position = env.reset_player_position()
         done = False
-        epsilon = episodes / (episodes + episode)
+        epsilon = 1 - (episode / episodes)
         if episode >= episodes - 5:
             epsilon = 0.
 
