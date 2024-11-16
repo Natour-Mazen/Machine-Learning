@@ -4,6 +4,8 @@ from keras import Sequential, Model
 from keras.src.applications.xception import Xception
 from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, GlobalAveragePooling2D, RandomFlip, RandomRotation
 from sklearn.model_selection import train_test_split
+from tensorflow.python.data import Dataset
+import tensorflow as tf
 from Full_connected import run_general_model, CATEGORIES
 from Plot_Display import display_loss_accuracy, display_confusion_matrix
 
@@ -13,22 +15,29 @@ IMAGE_SIZE = 256
 
 
 def load_images():
-    labels, _, _, _ = run_general_model()
-    image_paths = [IMAGES_PATH + str(i) + IMAGE_EXT for i in range(len(labels))]
+    labels, _, _, _, X_test, _, Y_test, Y_predict = run_general_model(displayResults=False)
+    classify_random_images(nb_images=5, X_test=X_test, Y_test=Y_test, Y_predict=Y_predict)
+    image_paths = np.array([
+            (IMAGES_PATH + str(i) + IMAGE_EXT) for i in range(len(labels))
+        ])
     images = []
     targets = np.zeros([len(labels), 10], 'int')
 
-    for i, path in enumerate(image_paths):
-        category = int(path[len(IMAGES_PATH):-len(IMAGE_EXT)]) // 100
-        targets[i, category] = 1
-        img = cv2.imread(path)
-        if img is not None:
-            img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE))
-            images.append(img)
-        else:
-            print(f"Warning: Unable to read image {path}. Skipping this file.")
+    it = 0
 
-    return np.array(images), targets
+    for img_name in image_paths:
+        category = int(img_name[len(IMAGES_PATH):-len(IMAGE_EXT)]) // 100
+        targets[it, category] = 1
+        img = cv2.resize(
+            cv2.imread(img_name),  # Retrieving the image
+            (IMAGE_SIZE, IMAGE_SIZE)
+        )  # Resizing the image
+        if img is None:
+            print(f"Warning: Unable to read image {img_name}. Skipping this file.")
+        images.append(img)
+        it += 1
+
+    return np.array(images), targets, images[0].shape
 
 
 def build_simple_model(input_shape):
@@ -64,11 +73,16 @@ def build_transfer_learning_model(input_shape):
     return model
 
 
-def build_augmented_model(input_shape):
+
+
+def build_augmented_model(input_shape, X_train, Y_train):
     data_augmentation = Sequential([
         RandomFlip("horizontal"),
         RandomRotation(0.1)
     ])
+
+    dataset = Dataset.from_tensor_slices((X_train, Y_train))
+    dataset = dataset.map(lambda x, y: (data_augmentation(tf.expand_dims(x, 0), training=True)[0], y))
 
     model = Sequential([
         data_augmentation,
@@ -94,13 +108,23 @@ def evaluate_and_display(model, X_test, Y_test, history, name):
     display_confusion_matrix(Y_predict=Y_predict, Y_test=Y_test, categories=CATEGORIES, name=name)
 
 
+def classify_random_images(nb_images = 5, X_test=None, Y_test=None, Y_predict=None):
+    images = [np.random.randint(0, len(X_test)) for i in range(nb_images)]
+
+    for img in images:
+        true_class = np.argmax(Y_test[img])
+        pred_class = np.argmax(Y_predict[img])
+        accuracy = round(Y_predict[img][pred_class] * 100, 2)
+        print()
+        print(f"Image n°{img} of class {true_class} => Category [{CATEGORIES[true_class]}]")
+        print(f"Model prediction : Class = {pred_class} => Category [{CATEGORIES[pred_class]}] | Accuracy = {accuracy}%")
+
 
 if __name__ == "__main__":
-    X, Y = load_images()
+    X, Y, input_shape = load_images()
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=1)
-    input_shape = X[0].shape
 
-    # Simple Model
+    # # Simple Model
     simple_model = build_simple_model(input_shape)
     history = compile_and_train(simple_model, X_train, Y_train, epochs=10)
     evaluate_and_display(simple_model, X_test, Y_test, history, name="Simple Model")
@@ -111,11 +135,11 @@ if __name__ == "__main__":
     evaluate_and_display(deep_model, X_test, Y_test, history, name="Deep Model")
 
     # Transfer Learning Model
-    # transfer_model = build_transfer_learning_model(input_shape)
-    # history = compile_and_train(transfer_model, X_train, Y_train, epochs=15)
-    # evaluate_and_display(transfer_model, X_test, Y_test, history, name="Transfer Learning Model")
+    transfer_model = build_transfer_learning_model(input_shape)
+    history = compile_and_train(transfer_model, X_train, Y_train, epochs=32)
+    evaluate_and_display(transfer_model, X_test, Y_test, history, name="Transfer Learning Model")
 
     # Augmented Model
-    # augmented_model = build_augmented_model(input_shape)
-    # history = compile_and_train(augmented_model, X_train, Y_train, epochs=15)
-    # evaluate_and_display(augmented_model, X_test, Y_test, history, name="Augmented Model")
+    augmented_model = build_augmented_model(input_shape, X_train, Y_train)
+    history = compile_and_train(augmented_model, X_train, Y_train, epochs=30)
+    evaluate_and_display(augmented_model, X_test, Y_test, history, name="Augmented Model")
