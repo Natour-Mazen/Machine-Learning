@@ -119,18 +119,20 @@ def process_descriptor(descriptor, Target, Labels):
 
 
 
-def run_general_model():
+def run_general_model(displayResults=True):
     X_train, X_test, Y_train, Y_test, Labels, Target = prepare_data()
     model = build_model()
     history = train_model(model, X_train, Y_train)
     test_loss, test_acc, Y_predict = evaluate_model(model, X_test, Y_test)
-    display_results(history, test_loss, test_acc, Y_test, Y_predict)
-    return Labels, Target, history, Y_predict
+
+    if displayResults:
+        display_results(history, test_loss, test_acc, Y_test, Y_predict)
+    return Labels, Target, history,X_train, X_test, Y_train, Y_test, Y_predict
 
 
 if __name__ == "__main__":
 
-    Labels, Target, _, _ = run_general_model()
+    Labels, Target, _, _, _, _, _, _ = run_general_model()
     DESCRIPTORS = [
         ('PHOG', load_descriptor(concatenate=False)),
         ('JCD', load_descriptor(sheet=1, concatenate=False)),
