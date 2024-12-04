@@ -26,6 +26,15 @@ if __name__ == '__main__':
     # Run Q-learning
     Q = q_learning(env, episodes, alpha, gamma, rewards_q_learning, game_gui)
 
+    while True:
+        game_gui.display_end()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        pygame.display.update()
+        pygame.time.delay(100)
+
    # pygame.quit()
 
     # Parameters for Deep Q-learning
