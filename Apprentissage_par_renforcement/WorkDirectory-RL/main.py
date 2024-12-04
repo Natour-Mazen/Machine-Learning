@@ -8,8 +8,8 @@ if __name__ == '__main__':
     # Parameters for Q-learning
     alpha = 0.9
     gamma = 0.5
-    # episodes = 200 # Simple rewards
-    episodes = 40 # More efficient rewards
+    # episodes = 1000 # Simple rewards
+    episodes = 50 # More efficient rewards
     rewards_q_learning = {'normal': Rewards.NORMAL.value,
                           'dragon': Rewards.ENEMIES.value,
                           'end': Rewards.END.value,
