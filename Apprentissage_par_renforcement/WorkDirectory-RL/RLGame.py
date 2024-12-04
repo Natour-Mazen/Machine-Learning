@@ -32,12 +32,14 @@ class RLGame:
 
         dx, dy = moves.get(action, (0, 0))
         new_position = (self.player_position[0] + dx, self.player_position[1] + dy)
+        hit_wall = False
 
         if not (0 <= new_position[0] < self.height and 0 <= new_position[1] < self.width):
             new_position = self.player_position
             reward = rewards.get('wall', Rewards.WALL.value)
             game_over = False
-            return new_position, reward, game_over
+            hit_wall = True
+            return new_position, reward, game_over, hit_wall
 
         cell_type = space[new_position]
         if cell_type == Symbols.DRAGON.value:
@@ -52,7 +54,7 @@ class RLGame:
 
         self.player_position = new_position
 
-        return new_position, reward, game_over
+        return new_position, reward, game_over, hit_wall
 
     def reset_player_position(self):
         self.player_position = self.start_pos

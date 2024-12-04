@@ -1,5 +1,8 @@
+import pygame
+
 from Enums.Moves import Moves
 from Enums.Rewards import Rewards
+from GameGUI import GameGUI
 from Q_learning import q_learning
 from RLGame import RLGame
 from Deep_Q_learning import play_optimal_policy, build_model, update_model, choose_action
@@ -18,8 +21,12 @@ if __name__ == '__main__':
     # Initialize environment
     env = RLGame.define_basic_game()
 
+    game_gui = GameGUI(env)
+
     # Run Q-learning
-    Q = q_learning(env, episodes, alpha, gamma, rewards_q_learning)
+    Q = q_learning(env, episodes, alpha, gamma, rewards_q_learning, game_gui)
+
+   # pygame.quit()
 
     # Parameters for Deep Q-learning
     # alpha = 0.9

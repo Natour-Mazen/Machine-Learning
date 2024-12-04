@@ -1,4 +1,8 @@
 import random
+from time import sleep
+
+import pygame
+
 from Enums.Moves import Moves
 import numpy as np
 
@@ -71,7 +75,7 @@ def print_q_table(Q):
         action_values = '\t'.join([f"{val:<10.2f}" for val in value.values()])
         print(f"{key}\t\t\t{action_values}")
 
-def q_learning(env, episodes, alpha, gamma, rewards):
+def q_learning(env, episodes, alpha, gamma, rewards, game_gui = None):
     Q = {}
 
     for x in range(env.height):
@@ -79,6 +83,7 @@ def q_learning(env, episodes, alpha, gamma, rewards):
             Q[(x, y)] = {move: 0 for move in Moves}
 
     for episode in range(episodes):
+
         position = env.reset_player_position()
         done = False
         epsilon = 1 - (episode / episodes)
@@ -87,17 +92,20 @@ def q_learning(env, episodes, alpha, gamma, rewards):
 
         while not done:
             action, rand = choose_action(position, epsilon, Q)
-            next_position, reward, done = env.apply_action(action, env.board, rewards)
+            next_position, reward, done, hit_wall = env.apply_action(action, env.board, rewards)
             Q = update_q_table(Q, position, action, reward, next_position, alpha, gamma)
+            if game_gui:
+                game_gui.update_display(position, next_position, hit_wall, action, reward, Q)
             position = next_position
             print(f"===================Episode: {episode}================================")
             env.display_board()
             print(f"position: {position}")
             print(f"Action: {action}, Reward: {reward}")
             print(f"Rand move: {rand}")
-            # print_q_table(Q)
-            print_q_board(Q)
-            #print(f"Q: {print_q_table(Q)}")
+            print_q_table(Q)
+            # print_q_board(Q)
+            # print(f"Q: {print_q_table(Q)}")
+            # sleep(0.5)
 
     return Q
 
