@@ -9,8 +9,15 @@ from enum import Enum
 #     WALL = -1
 
 # More efficient rewards
+# class Rewards(Enum):
+#     NORMAL = -1
+#     ENEMIES = -10
+#     END = 30
+#     WALL = -2
+
+# Deep rewards
 class Rewards(Enum):
     NORMAL = -1
-    ENEMIES = -10
-    END = 30
-    WALL = -2
+    ENEMIES = -20
+    END = 100
+    WALL = -5
