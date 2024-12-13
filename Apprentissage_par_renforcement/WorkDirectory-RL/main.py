@@ -88,4 +88,3 @@ if __name__ == '__main__':
                 exit()
         pygame.display.update()
         pygame.time.delay(100)
-    pygame.quit()
