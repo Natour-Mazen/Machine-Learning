@@ -16,24 +16,19 @@ if __name__ == '__main__':
     # # episodes = 1000 # Simple rewards
     # episodes = 100 # More efficient rewards
 
-
-
     ####################################
     ## Parameters for Deep Q-learning ##
     ####################################
     gamma = 0.999
-    episodes = 10 # More efficient rewards
-
-
+    episodes = 2000 # More efficient rewards
 
     #######################################
     ##         General rewards           ##
     #######################################
-    rewards_q_learning = {'normal': Rewards.NORMAL.value,
+    rewards_q_learning = { 'normal': Rewards.NORMAL.value,
                            'dragon': Rewards.ENEMIES.value,
                            'end': Rewards.END.value,
                            'wall': Rewards.WALL.value}
-
 
     ##############################################
     ## Initialize environment with the Game GUI ##

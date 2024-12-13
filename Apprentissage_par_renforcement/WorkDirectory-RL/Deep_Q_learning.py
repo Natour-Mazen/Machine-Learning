@@ -4,6 +4,8 @@ import keras
 from keras import Sequential
 from keras.src.layers import Dense
 import tensorflow as tf
+
+from Enums.Rewards import Rewards
 from helper import plot
 from Q_learning import print_q_board
 
@@ -11,8 +13,8 @@ from Enums.Moves import Moves
 
 def build_model(input_shape = 16, output_shape = 4):
     model = Sequential([
-        #Dense(16, activation='relu', input_shape=[input_shape]),
         Dense(8, activation='relu', input_shape=[input_shape]),
+        Dense(8, activation='relu', input_shape=[8]),
         Dense(output_shape)
     ])
     #model.compile(optimizer='adam', loss='mse')
@@ -42,8 +44,8 @@ def q_deep_learning(env, episodes, gamma, rewards, game_gui):
     model = build_model(env.width * env.height, len(Moves))
 
     # Declaration of the optimizer.
-    optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
-    #optimizer = tf.keras.optimizers.SGD(learning_rate=0.01)
+    # optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
+    optimizer = tf.keras.optimizers.SGD(learning_rate=0.0001)
     # Declaration of the loss function (MSE)
     loss_fn = keras.losses.mean_squared_error
 
@@ -65,7 +67,8 @@ def q_deep_learning(env, episodes, gamma, rewards, game_gui):
         done = False
         # Epsilon
         epsilon = 1 - (episode / episodes)
-        if episode >= episodes / 1.2:
+        # if episode >= episodes / 1.8:
+        if episode >= episodes / 1.5:
             epsilon = 0.
 
         total_rewards = 0
@@ -88,6 +91,14 @@ def q_deep_learning(env, episodes, gamma, rewards, game_gui):
 
                 # game_gui.update_display(env.player_position, next_position, wall_hit, action, reward, Q)
 
+            # if done and reward == Rewards.END.value:
+            #     return model
+
+            # If we make too many steps
+            # if total_steps > 60:
+            #     done = True
+            #     reward = Rewards.LOOP.value
+
             t = reward + gamma * next_Q_max * (1 - done)
 
             with tf.GradientTape() as tape:
@@ -100,20 +111,20 @@ def q_deep_learning(env, episodes, gamma, rewards, game_gui):
             gradients = tape.gradient(loss, model.trainable_variables)
             optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
-            # if epsilon <= 0.2:
-            #     Q_target = {}
-            #
-            #     for x in range(env.height):
-            #         for y in range(env.width):
-            #             v_position = np.zeros(4 * 4)
-            #             index = x * 4 + y
-            #             v_position[index] = 1
-            #             pre = model.predict(np.array([v_position]),verbose = 0)
-            #             pre = pre[0]
-            #
-            #             Q_target[(x, y)] = {tup[0]: tup[1] for tup in zip(Moves, pre)}
-            #
-            #     print_q_board(Q_target)
+            if epsilon <= 0.2:
+                Q_target = {}
+
+                for x in range(env.height):
+                    for y in range(env.width):
+                        v_position = np.zeros(4 * 4)
+                        index = x * 4 + y
+                        v_position[index] = 1
+                        pre = model.predict(np.array([v_position]),verbose = 0)
+                        pre = pre[0]
+
+                        Q_target[(x, y)] = {tup[0]: tup[1] for tup in zip(Moves, pre)}
+
+                print_q_board(Q_target)
 
             if epsilon <= 0.2:
                 print(f"yTrue: {t}, yPred: {val_predict}")
