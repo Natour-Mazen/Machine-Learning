@@ -1,7 +1,6 @@
 import numpy as np
 import random
 import keras
-import pygame
 from keras import Sequential
 from keras.src.layers import Dense
 import tensorflow as tf
@@ -9,8 +8,6 @@ import tensorflow as tf
 from Enums.Rewards import Rewards
 from helper import plot
 from Q_learning import print_q_board
-from RLGame import RLGame
-from GameGUI import GameGUI
 
 from Enums.Moves import Moves
 
@@ -190,45 +187,45 @@ def q_deep_learning(env, episodes, gamma, rewards, better_model : bool = False):
         model.save('models/model.keras')
     return model
 
-def play_q_deep_learning(model, rewards):
-    print("=== Start reel game ===")
-    game_board = RLGame.define_basic_game()
-    game_board.display_board()
-
-    game_gui = GameGUI(game_board)
-
-    running = True
-    while running:
-        game_board.reset_player_position()
-        done = False
-        while not done:
-            action, vec_position = choose_action(game_board, 0, model, game_board.width, game_board.height)
-            next_position, reward, done, wall_hit = game_board.apply_action(action, game_board.board, rewards)
-
-            game_board.display_board()
-            print(f"position: {game_board.player_position}")
-            print(f"Action: {action}, Reward: {reward}")
-            print("===  ===")
-            game_gui.update_display(game_board.player_position, next_position, wall_hit, action, reward)
-
-            for event in pygame.event.get():
-                # If we qui the window.
-                if event.type == pygame.QUIT:
-                    running = False
-
-                # If a key is pressed.
-                if event.type == pygame.KEYDOWN:
-                    # If the "q" key is pressed.
-                    if event.key == pygame.K_q:
-                        running = False
-
-    pygame.quit()
+# def play_q_deep_learning(model, rewards):
+#     print("=== Start reel game ===")
+#     game_board = RLGame.define_basic_game()
+#     game_board.display_board()
+#
+#     game_gui = GameGUI(game_board)
+#
+#     running = True
+#     while running:
+#         game_board.reset_player_position()
+#         done = False
+#         while not done:
+#             action, vec_position = choose_action(game_board, 0, model, game_board.width, game_board.height)
+#             next_position, reward, done, wall_hit = game_board.apply_action(action, game_board.board, rewards)
+#
+#             game_board.display_board()
+#             print(f"position: {game_board.player_position}")
+#             print(f"Action: {action}, Reward: {reward}")
+#             print("===  ===")
+#             game_gui.update_display(game_board.player_position, next_position, wall_hit, action, reward)
+#
+#             for event in pygame.event.get():
+#                 # If we qui the window.
+#                 if event.type == pygame.QUIT:
+#                     running = False
+#
+#                 # If a key is pressed.
+#                 if event.type == pygame.KEYDOWN:
+#                     # If the "q" key is pressed.
+#                     if event.key == pygame.K_q:
+#                         running = False
+#
+#     pygame.quit()
 
 
 def train_and_play_q_deep_learning(env, episodes, gamma, rewards, better_model = False):
     trained_model = q_deep_learning(env, episodes, gamma, rewards, better_model)
 
-    play_q_deep_learning(trained_model, rewards)
+    # play_q_deep_learning(trained_model, rewards)
 
 
 def load_and_play_q_deep_learning(env, episodes, gamma, rewards, better_model = False):
@@ -238,4 +235,4 @@ def load_and_play_q_deep_learning(env, episodes, gamma, rewards, better_model = 
     else:
         trained_model = keras.models.load_model('models/model.keras')
 
-    play_q_deep_learning(trained_model, rewards)
+    # play_q_deep_learning(trained_model, rewards)
