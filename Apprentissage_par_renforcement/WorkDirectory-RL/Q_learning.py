@@ -1,8 +1,4 @@
 import random
-from time import sleep
-
-import pygame
-
 from Enums.Moves import Moves
 import numpy as np
 
@@ -95,7 +91,7 @@ def q_learning(env, episodes, alpha, gamma, rewards, game_gui = None):
             next_position, reward, done, hit_wall = env.apply_action(action, env.board, rewards)
             Q = update_q_table(Q, position, action, reward, next_position, alpha, gamma)
             if game_gui:
-                game_gui.update_display(position, next_position, hit_wall, action, reward, Q)
+                game_gui.update_display_Q_Learning(position, next_position, hit_wall, action, reward, Q)
             position = next_position
             print(f"===================Episode: {episode}================================")
             env.display_board()
@@ -107,5 +103,4 @@ def q_learning(env, episodes, alpha, gamma, rewards, game_gui = None):
             # print(f"Q: {print_q_table(Q)}")
             # sleep(0.5)
 
-    return Q
 
