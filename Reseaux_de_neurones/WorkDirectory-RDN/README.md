@@ -11,4 +11,7 @@ Run the command `pip freeze > requirements.txt` to get this file.
 
 ## Usage
 
+IMPORTANT: you need the `/Wang` folder (downloadable form UPDAGO) in the `/ressources` folder to run the `Deep.py` file
+    otherwise you will get an error.
+
 Go to each file and run the command `python <filename>.py` to run the file.
