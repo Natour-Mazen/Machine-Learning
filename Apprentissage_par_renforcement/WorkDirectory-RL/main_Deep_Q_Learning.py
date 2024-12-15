@@ -2,26 +2,17 @@ import pygame
 
 from Enums.Moves import Moves
 from Enums.Rewards import Rewards
-from GameGUI import GameGUI
-from Q_learning import q_learning
+from GUI.GameGUI import GameGUI
 from RLGame import RLGame
 from Deep_Q_learning import q_deep_learning, choose_action, train_and_play_q_deep_learning, \
     load_and_play_q_deep_learning
 
 if __name__ == '__main__':
     ####################################
-    ##    Parameters for Q-learning   ##
-    ####################################
-    # alpha = 0.9
-    # gamma = 0.5
-    # # episodes = 1000 # Simple rewards
-    # episodes = 100 # More efficient rewards
-
-    ####################################
     ## Parameters for Deep Q-learning ##
     ####################################
-    gamma = 0.999
-    episodes = 10000 # More efficient rewards
+    # gamma = 0.999
+    # episodes = 10000 # More efficient rewards
 
     #######################################
     ##         General rewards           ##
@@ -35,18 +26,12 @@ if __name__ == '__main__':
     ## Initialize environment with the Game GUI ##
     ##############################################
     env = RLGame.define_basic_game()
-    game_gui = GameGUI(env)
-
-    #######################################
-    ##          Run Q-learning           ##
-    #######################################
-    # Q = q_learning(env, episodes, alpha, gamma, rewards_q_learning, game_gui)
 
     #######################################
     ##      Run Deep Q-learning          ##
     #######################################
-
-    train_and_play_q_deep_learning(env, episodes, gamma, rewards_q_learning, True)
+    game_gui = GameGUI(env, use_q_table=False)
+    #train_and_play_q_deep_learning(env, episodes, gamma, rewards_q_learning, True)
 
     # load_and_play_q_deep_learning(env, episodes, gamma, rewards_q_learning, True)
 
@@ -85,11 +70,12 @@ if __name__ == '__main__':
     ##                End                ##
     #######################################
 
-    # while True:
-    #     game_gui.display_end()
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             pygame.quit()
-    #             exit()
-    #     pygame.display.update()
-    #     pygame.time.delay(100)
+    while True:
+        game_gui.display_end()
+        pygame.event.pump()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        pygame.display.update()
+        pygame.time.delay(100)
