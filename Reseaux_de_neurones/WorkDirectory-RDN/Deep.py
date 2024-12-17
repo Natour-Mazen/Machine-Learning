@@ -1,18 +1,18 @@
 import cv2
 import numpy as np
 from keras import Sequential, Model
-from keras.src.applications.xception import Xception
+from keras.src.applications.efficientnet import EfficientNetB0
 from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, GlobalAveragePooling2D, RandomFlip, RandomRotation
 from sklearn.model_selection import train_test_split
-from tensorflow.python.data import Dataset
-import tensorflow as tf
+from tensorflow.python.keras.callbacks import EarlyStopping
+
 from Full_connected import run_general_model, CATEGORIES
 from Plot_Display import display_loss_accuracy, display_confusion_matrix
 
+
 IMAGES_PATH = 'ressources/Wang/'
 IMAGE_EXT = '.jpg'
-IMAGE_SIZE = 256
-
+IMAGE_SIZE = 128 # 96
 
 def load_images():
     labels, _, _, _, X_test, _, Y_test, Y_predict = run_general_model(displayResults=False)
@@ -29,9 +29,9 @@ def load_images():
         category = int(img_name[len(IMAGES_PATH):-len(IMAGE_EXT)]) // 100
         targets[it, category] = 1
         img = cv2.resize(
-            cv2.imread(img_name),  # Retrieving the image
-            (IMAGE_SIZE, IMAGE_SIZE)
-        )  # Resizing the image
+            cv2.imread(img_name),
+            (IMAGE_SIZE, IMAGE_SIZE)  # Utilise maintenant la nouvelle taille
+        )
         if img is None:
             print(f"Warning: Unable to read image {img_name}. Skipping this file.")
         images.append(img)
@@ -63,26 +63,21 @@ def build_deep_model(input_shape):
 
 
 def build_transfer_learning_model(input_shape):
-    base_model = Xception(weights='imagenet', include_top=False, input_shape=input_shape)
-    for layer in base_model.layers:
+    base_model = EfficientNetB0(weights='imagenet', include_top=False, input_shape=input_shape)
+    for layer in base_model.layers[:-4]:
         layer.trainable = False
     x = GlobalAveragePooling2D()(base_model.output)
-    x = Dense(512, activation='relu')(x)
+    x = Dense(64, activation='relu')(x)
     output = Dense(10, activation='softmax')(x)
     model = Model(base_model.input, output)
     return model
 
 
-
-
-def build_augmented_model(input_shape, X_train, Y_train):
+def build_augmented_model(input_shape):
     data_augmentation = Sequential([
         RandomFlip("horizontal"),
         RandomRotation(0.1)
     ])
-
-    dataset = Dataset.from_tensor_slices((X_train, Y_train))
-    dataset = dataset.map(lambda x, y: (data_augmentation(tf.expand_dims(x, 0), training=True)[0], y))
 
     model = Sequential([
         data_augmentation,
@@ -96,9 +91,10 @@ def build_augmented_model(input_shape, X_train, Y_train):
     return model
 
 
-def compile_and_train(model, X_train, Y_train, epochs=10):
+def compile_and_train(model, X_train, Y_train, epochs=10, batch_size=64):
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    return model.fit(X_train, Y_train, validation_split=0.2, epochs=epochs, batch_size=32, verbose=0)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=epochs, verbose=1)
+    return model.fit(X_train, Y_train, validation_split=0.2, callbacks=[early_stopping], epochs=1000, batch_size=batch_size, verbose=2, validation_data=(X_test, Y_test))
 
 
 def evaluate_and_display(model, X_test, Y_test, history, name):
@@ -124,14 +120,14 @@ if __name__ == "__main__":
     X, Y, input_shape = load_images()
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=1)
 
-    # # Simple Model
+    # Simple Model
     simple_model = build_simple_model(input_shape)
-    history = compile_and_train(simple_model, X_train, Y_train, epochs=10)
+    history = compile_and_train(simple_model, X_train, Y_train, epochs=20, batch_size=0)
     evaluate_and_display(simple_model, X_test, Y_test, history, name="Simple Model")
 
     # Deep Model
     deep_model = build_deep_model(input_shape)
-    history = compile_and_train(deep_model, X_train, Y_train, epochs=15)
+    history = compile_and_train(deep_model, X_train, Y_train, epochs=40, batch_size=5)
     evaluate_and_display(deep_model, X_test, Y_test, history, name="Deep Model")
 
     # Transfer Learning Model
@@ -140,6 +136,6 @@ if __name__ == "__main__":
     evaluate_and_display(transfer_model, X_test, Y_test, history, name="Transfer Learning Model")
 
     # Augmented Model
-    augmented_model = build_augmented_model(input_shape, X_train, Y_train)
-    history = compile_and_train(augmented_model, X_train, Y_train, epochs=30)
+    augmented_model = build_augmented_model(input_shape)
+    history = compile_and_train(augmented_model, X_train, Y_train, epochs=30, batch_size=16)
     evaluate_and_display(augmented_model, X_test, Y_test, history, name="Augmented Model")
