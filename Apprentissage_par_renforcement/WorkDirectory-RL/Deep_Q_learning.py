@@ -47,7 +47,22 @@ def choose_action(game, epsilon, model, width, height):
         q_values = model.predict(np.array([vector_position]),verbose = 0)
         return Moves(np.argmax(q_values)), vector_position
 
-def q_deep_learning(game, episodes, gamma, rewards, better_model : bool = False):
+def print_model_weights(model, game):
+    Q_target = {}
+
+    for x in range(game.height):
+        for y in range(game.width):
+            v_position = np.zeros(4 * 4)
+            index = x * 4 + y
+            v_position[index] = 1
+            pre = model.predict(np.array([v_position]), verbose=0)
+            pre = pre[0]
+
+            Q_target[(x, y)] = {tup[0]: tup[1] for tup in zip(Moves, pre)}
+
+    print_q_board(Q_target)
+
+def q_deep_learning(game, episodes, gamma, rewards,  better_model : bool = False):
 
     # Initialize model
     if better_model:
@@ -74,11 +89,6 @@ def q_deep_learning(game, episodes, gamma, rewards, better_model : bool = False)
     total_wins = 0
     model_done = False
 
-    # The last position of the last game.
-    last_game_finish = -1
-    # The number of time the last position has been played.
-    last_game_finish_nb = 0
-
     # Run Deep Q-learning
     for episode in range(episodes):
         # Reset the player position and the end of the game.
@@ -95,8 +105,6 @@ def q_deep_learning(game, episodes, gamma, rewards, better_model : bool = False)
         total_rewards = 0
         total_steps = 0
 
-        array_position_nb = np.zeros([16])
-
         # We run one game.
         while not done:
             # action = UP, DOWN, LEFT or RIGHT.
@@ -109,26 +117,12 @@ def q_deep_learning(game, episodes, gamma, rewards, better_model : bool = False)
             next_Q = target.predict(np.array([next_vec_position]), verbose = 0)
             next_Q_max = np.max(next_Q)
 
-            current_position = np.argmax(vec_position)
-            array_position_nb[current_position] += 1
-
-            # if done:
-            #     if last_game_finish == current_position:
-            #         last_game_finish_nb += 1
-            #         # The reward is multiplied
-            #         reward *= last_game_finish_nb
-            #     else:
-            #         last_game_finish = current_position
-            #         last_game_finish_nb = 1
-
             if b_full_model:
                 print(f"===================Episode: {episode}================================")
                 game.display_board()
                 print(f"position: {game.player_position}")
                 print(f"Action: {action}, Reward: {reward}")
                 print(f"Done: {done}")
-
-                # game_gui.update_display(game.player_position, next_position, wall_hit, action, reward, Q)
 
             if done and reward == Rewards.ENEMIES.value and b_full_model:
                 if total_wins > 0:
@@ -151,26 +145,6 @@ def q_deep_learning(game, episodes, gamma, rewards, better_model : bool = False)
             if (total_steps > 10 and b_full_model) or (total_steps > 100 and not b_full_model):
                 done = True
                 reward = Rewards.LOOP.value
-
-            # if b_full_model:
-            #     Q_target = {}
-            #
-            #     for x in range(game.height):
-            #         for y in range(game.width):
-            #             v_position = np.zeros(4 * 4)
-            #             index = x * 4 + y
-            #             v_position[index] = 1
-            #             pre = model.predict(np.array([v_position]),verbose = 0)
-            #             pre = pre[0]
-            #
-            #             Q_target[(x, y)] = {tup[0]: tup[1] for tup in zip(Moves, pre)}
-            #
-            #     print_q_board(Q_target)
-
-            # The value of the reward that we want.
-            reward_multiplier = 1
-            if array_position_nb[current_position] > 1:
-                reward_multiplier = array_position_nb[current_position]
 
             t = reward + gamma * next_Q_max * (1 - done) * (1 - wall_hit)
 
@@ -203,20 +177,9 @@ def q_deep_learning(game, episodes, gamma, rewards, better_model : bool = False)
             target.set_weights(model.get_weights())
             plot(rewards_array, steps_array)
 
+        # Each 100 episodes, we display all the weights for each positions on the board.
         if episode % 100 == 0:
-            Q_target = {}
-
-            for x in range(game.height):
-                for y in range(game.width):
-                    v_position = np.zeros(4 * 4)
-                    index = x * 4 + y
-                    v_position[index] = 1
-                    pre = model.predict(np.array([v_position]), verbose=0)
-                    pre = pre[0]
-
-                    Q_target[(x, y)] = {tup[0]: tup[1] for tup in zip(Moves, pre)}
-
-            print_q_board(Q_target)
+            print_model_weights(model, game)
 
         if model_done:
             break
@@ -249,6 +212,11 @@ def play_q_deep_learning(game, model, rewards, game_gui):
     while running:
         game.reset_player_position()
         done = False
+
+        print_model_weights(model, game)
+
+        game_gui.update_display_Deep_Q_Learning(game.player_position, (0, 0), False, Moves.UP, 0)
+
         while not done:
             action, vec_position = choose_action(game, 0, model, game.width, game.height)
             next_position, reward, done, wall_hit = game.apply_action(action, game.board, rewards)
@@ -256,24 +224,41 @@ def play_q_deep_learning(game, model, rewards, game_gui):
             game.display_board()
             print(f"position: {game.player_position}")
             print(f"Action: {action}, Reward: {reward}")
-            print("===  ===")
 
             game_gui.update_display_Deep_Q_Learning(game.player_position, next_position, wall_hit, action, reward)
 
     pygame.quit()
 
 
-def train_and_play_q_deep_learning(game, episodes, gamma, rewards, game_gui, better_model = False):
+def train_and_play_q_deep_learning(game, episodes, gamma, rewards, better_model = False):
     trained_model = q_deep_learning(game, episodes, gamma, rewards, better_model)
+
+    game_gui = GameGUI(game, use_q_table=False)
 
     play_q_deep_learning(game, trained_model, rewards, game_gui)
 
+    wait_game_gui(game_gui)
 
-def load_and_play_q_deep_learning(game, episodes, gamma, rewards, game_gui, better_model = False):
+def load_and_play_q_deep_learning(game, rewards, better_model = False):
 
     if better_model:
         trained_model =  keras.models.load_model('better_model.keras')
     else:
         trained_model = keras.models.load_model('model.keras')
 
+    game_gui = GameGUI(game, use_q_table=False)
+
     play_q_deep_learning(game, trained_model, rewards, game_gui)
+
+    wait_game_gui(game_gui)
+
+def wait_game_gui(game_gui):
+    while True:
+        game_gui.display_end()
+        pygame.event.pump()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        pygame.display.update()
+        pygame.time.delay(100)

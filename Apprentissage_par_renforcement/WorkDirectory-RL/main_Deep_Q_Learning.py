@@ -12,13 +12,15 @@ if __name__ == '__main__':
     ####################################
     ## Parameters for Deep Q-learning ##
     ####################################
-    gamma = 0.499
+    gamma = 0.999
+    learn = True # True learn else run the saved model.
+
     # Simple model
     # episodes = 2000
     # better_model = False
 
     # Better model
-    episodes = 2000
+    episodes = 3000
     better_model = True
 
     #######################################
@@ -37,21 +39,8 @@ if __name__ == '__main__':
     #######################################
     ##      Run Deep Q-learning          ##
     #######################################
-    game_gui = GameGUI(game, use_q_table=False)
-    #train_and_play_q_deep_learning(game, episodes, gamma, rewards_q_learning, game_gui, better_model)
 
-    load_and_play_q_deep_learning(game, episodes, gamma, rewards_q_learning, game_gui, better_model)
-
-    #######################################
-    ##                End                ##
-    #######################################
-
-    while True:
-        game_gui.display_end()
-        pygame.event.pump()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-        pygame.display.update()
-        pygame.time.delay(100)
+    if learn:
+        train_and_play_q_deep_learning(game, episodes, gamma, rewards_q_learning, better_model)
+    else:
+        load_and_play_q_deep_learning(game, rewards_q_learning, better_model)
