@@ -71,16 +71,16 @@ def print_q_table(Q):
         action_values = '\t'.join([f"{val:<10.2f}" for val in value.values()])
         print(f"{key}\t\t\t{action_values}")
 
-def q_learning(env, episodes, alpha, gamma, rewards, game_gui = None):
+def q_learning(game, episodes, alpha, gamma, rewards, game_gui = None):
     Q = {}
 
-    for x in range(env.height):
-        for y in range(env.width):
+    for x in range(game.height):
+        for y in range(game.width):
             Q[(x, y)] = {move: 0 for move in Moves}
 
     for episode in range(episodes):
 
-        position = env.reset_player_position()
+        position = game.reset_player_position()
         done = False
         epsilon = 1 - (episode / episodes)
         if episode >= episodes - 5:
@@ -88,13 +88,13 @@ def q_learning(env, episodes, alpha, gamma, rewards, game_gui = None):
 
         while not done:
             action, rand = choose_action(position, epsilon, Q)
-            next_position, reward, done, hit_wall = env.apply_action(action, env.board, rewards)
+            next_position, reward, done, hit_wall = game.apply_action(action, game.board, rewards)
             Q = update_q_table(Q, position, action, reward, next_position, alpha, gamma)
             if game_gui:
                 game_gui.update_display_Q_Learning(position, next_position, hit_wall, action, reward, Q)
             position = next_position
             print(f"===================Episode: {episode}================================")
-            env.display_board()
+            game.display_board()
             print(f"position: {position}")
             print(f"Action: {action}, Reward: {reward}")
             print(f"Rand move: {rand}")

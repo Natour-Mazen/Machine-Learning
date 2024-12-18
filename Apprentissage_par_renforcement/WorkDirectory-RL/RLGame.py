@@ -3,6 +3,7 @@ import numpy as np
 from Enums.Moves import Moves
 from Enums.Rewards import Rewards
 from Enums.Symbols import Symbols
+import random
 
 class RLGame:
     def __init__(self, width, height, start_pos, end_pos, dragons):
@@ -67,6 +68,16 @@ class RLGame:
 
         for row in board:
             print(' '.join(row))
+
+    def reset_random_player_position(self):
+        while True:
+            position_index = random.randrange(0, 16)
+            index_x = position_index % self.width
+            index_y = position_index // self.width
+            symbols = self.board[index_x, index_y]
+            if symbols == Symbols.EMPTY.value:
+                self.player_position = (index_x, index_y)
+                return self.player_position
 
     @staticmethod
     def define_basic_game():

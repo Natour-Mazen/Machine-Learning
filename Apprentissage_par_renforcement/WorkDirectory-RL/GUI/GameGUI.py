@@ -9,26 +9,26 @@ from GUI.Utils import TILE_SIZE, WHITE, BLACK, LIGHTGRAY
 class GameGUI:
     """Main class for managing the GUI of the RL game."""
 
-    def __init__(self, env, use_q_table=False):
+    def __init__(self, game, use_q_table=False):
         """
         Initializes the Game GUI.
-        :param env: The game environment.
+        :param game: The game environment.
         :param use_q_table: Boolean indicating if Q-table visualization is needed.
         """
-        self.env = env
-        self.board = Board(env, offset_x=200, offset_y=100)
+        self.game = game
+        self.board = Board(game, offset_x=200, offset_y=120)
         self.info_panel = InfoPanel(offset_y=20)
 
         # Initialize the Q-table panel only if needed
         self.use_q_table = use_q_table
         if self.use_q_table:
-            self.q_table_panel = QTablePanel(offset_x=env.width * TILE_SIZE + 250, offset_y=20)
+            self.q_table_panel = QTablePanel(offset_x=game.width * TILE_SIZE + 250, offset_y=20)
 
         self.animator = Animator(board_offset_x=200, board_offset_y=100, clock=pygame.time.Clock())
 
         # Adjust screen size based on whether Q-table is used
-        self.screen_width = env.width * TILE_SIZE + (800 if self.use_q_table else 400)
-        self.screen_height = env.height * TILE_SIZE + 300
+        self.screen_width = game.width * TILE_SIZE + (800 if self.use_q_table else 400)
+        self.screen_height = game.height * TILE_SIZE + 300
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("RL Game")
 

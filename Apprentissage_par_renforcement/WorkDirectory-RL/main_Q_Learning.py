@@ -26,13 +26,13 @@ if __name__ == '__main__':
     ##############################################
     ## Initialize environment with the Game GUI ##
     ##############################################
-    env = RLGame.define_basic_game()
+    game = RLGame.define_basic_game()
 
     #######################################
     ##          Run Q-learning           ##
     #######################################
-    game_gui = GameGUI(env, use_q_table=True)
-    q_learning(env, episodes, alpha, gamma, rewards_q_learning, game_gui)
+    game_gui = GameGUI(game, use_q_table=True)
+    q_learning(game, episodes, alpha, gamma, rewards_q_learning, game_gui)
 
     #######################################
     ##                End                ##
