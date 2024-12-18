@@ -16,22 +16,22 @@ IMAGE_SIZE = 128  # Taille de redimensionnement des images
 
 
 def load_images():
-    labels, _, _, X_test, _, Y_test, Y_predict = run_general_model(displayResults=False)
-    classify_random_images(nb_images=5, X_test=X_test, Y_test=Y_test, Y_predict=Y_predict)
-    image_paths = np.array([
+    labels, _, _, X_test, _, Y_test, Y_predict = run_general_model(displayResults=False) # Récupération des labels
+    classify_random_images(nb_images=5, X_test=X_test, Y_test=Y_test, Y_predict=Y_predict) # Classification des images aléatoires
+    image_paths = np.array([ # Récupération des images
             (IMAGES_PATH + str(i) + IMAGE_EXT) for i in range(len(labels))
         ])
-    images = []
-    targets = np.zeros([len(labels), 10], 'int')
+    images = [] # Création d'une liste d'images
+    targets = np.zeros([len(labels), 10], 'int') # Création d'une liste de cibles
 
     it = 0
 
-    for img_name in image_paths:
-        category = int(img_name[len(IMAGES_PATH):-len(IMAGE_EXT)]) // 100
-        targets[it, category] = 1
+    for img_name in image_paths: # Parcours des images
+        category = int(img_name[len(IMAGES_PATH):-len(IMAGE_EXT)]) // 100 # Récupération de la catégorie
+        targets[it, category] = 1 # Ajout de la catégorie à la liste de cibles
         img = cv2.resize(
             cv2.imread(img_name),
-            (IMAGE_SIZE, IMAGE_SIZE)  # Redimensionnement
+            (IMAGE_SIZE, IMAGE_SIZE) 
         )
         if img is None:
             print(f"Warning: Unable to read image {img_name}. Skipping this file.")
