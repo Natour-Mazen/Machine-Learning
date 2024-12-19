@@ -62,7 +62,7 @@ def print_model_weights(model, game):
 
     print_q_board(Q_target)
 
-def q_deep_learning(game, episodes, gamma, rewards,  better_model : bool = False):
+def q_deep_learning(game, episodes_random, episodes, gamma, rewards,  better_model : bool = False, random_spawn : bool = False):
 
     # Initialize model
     if better_model:
@@ -70,11 +70,16 @@ def q_deep_learning(game, episodes, gamma, rewards,  better_model : bool = False
     else:
         model = build_model(game.width * game.height, len(Moves))
 
+    print(f"Start weights model: ")
+    print_model_weights(model, game)
+
     # Declaration of the optimizer.
     if better_model:
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.0001)
+        #optimizer = tf.keras.optimizers.SGD(learning_rate=0.0001)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
     else:
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
+        #optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.01) # With 0.001 slow learning
 
     # Declaration of the loss function (MSE)
     loss_fn = keras.losses.mean_squared_error
@@ -90,15 +95,20 @@ def q_deep_learning(game, episodes, gamma, rewards,  better_model : bool = False
     model_done = False
 
     # Run Deep Q-learning
-    for episode in range(episodes):
+    for episode in range(episodes_random + episodes):
         # Reset the player position and the end of the game.
-        game.reset_random_player_position()
+        if random_spawn and not b_full_model:
+            game.reset_random_player_position()
+        else:
+            game.reset_player_position()
+
         done = False
         # Epsilon if function of the number of episodes (the more, the less we use randomness when predict).
-        epsilon = 1 - (episode / episodes)
+        # * 2 : max epsilon -> 0.5, * 4 : max epsilon -> 0.25, * 10 : max epsilon -> 0.1
+        epsilon = 1 - (episode / episodes_random / 1)
 
         # We stop the randomness of the model.
-        if episode >= episodes * 0.9:
+        if episode >= episodes_random:
             epsilon = 0.
             b_full_model = True
 
@@ -132,9 +142,7 @@ def q_deep_learning(game, episodes, gamma, rewards,  better_model : bool = False
                 # If we have found the end of the game.
                 if reward == Rewards.END.value:
                     total_wins += 1
-                    print(f"total_wins: {total_wins}")
-                    if total_wins >= 10:
-                        print(f"======================= return =============\n\n\n\n\n\n\n\n\n\n:")
+                    if total_wins >= 20:
                         model_done = True
                         break
                 # If we lost the game on an enemy.
@@ -172,8 +180,8 @@ def q_deep_learning(game, episodes, gamma, rewards,  better_model : bool = False
         rewards_array.append(total_rewards)
         steps_array.append(total_steps)
 
-        # Each 10 episodes, we update the "target" model with the current one ("model").
-        if episode % 10 == 0:
+        # Each 100 episodes, we update the "target" model with the current one ("model").
+        if episode % 100 == 0:
             target.set_weights(model.get_weights())
             plot(rewards_array, steps_array)
 
@@ -181,27 +189,23 @@ def q_deep_learning(game, episodes, gamma, rewards,  better_model : bool = False
         if episode % 100 == 0:
             print_model_weights(model, game)
 
+        if episode - episodes_random < 0:
+            ep = 0
+        else:
+            ep = episodes_random - episode
+        print(f"Episodes_rand: {episode} / {episodes_random}, Episodes: {ep} / {episodes}, Epsilon: {epsilon : 1.2f}")
+
         if model_done:
             break
 
-    Q_target = {}
+    print(f"End weights model: ")
+    print_model_weights(model, game)
 
-    for x in range(game.height):
-        for y in range(game.width):
-            v_position = np.zeros(4 * 4)
-            index = x * 4 + y
-            v_position[index] = 1
-            pre = model.predict(np.array([v_position]), verbose=0)
-            pre = pre[0]
-
-            Q_target[(x, y)] = {tup[0]: tup[1] for tup in zip(Moves, pre)}
-
-    print_q_board(Q_target)
-
-    if better_model:
-        model.save('better_model.keras')
-    else:
-        model.save('model.keras')
+    if model_done:
+        if better_model:
+            model.save('better_model.keras')
+        else:
+            model.save('model.keras')
     return model
 
 def play_q_deep_learning(game, model, rewards, game_gui):
@@ -230,8 +234,8 @@ def play_q_deep_learning(game, model, rewards, game_gui):
     pygame.quit()
 
 
-def train_and_play_q_deep_learning(game, episodes, gamma, rewards, better_model = False):
-    trained_model = q_deep_learning(game, episodes, gamma, rewards, better_model)
+def train_and_play_q_deep_learning(game, episodes_random, episodes, gamma, rewards, better_model = False, random_spawn = False):
+    trained_model = q_deep_learning(game, episodes_random, episodes, gamma, rewards, better_model, random_spawn)
 
     game_gui = GameGUI(game, use_q_table=False)
 

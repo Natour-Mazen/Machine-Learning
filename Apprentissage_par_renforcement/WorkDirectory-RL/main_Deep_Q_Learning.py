@@ -16,12 +16,14 @@ if __name__ == '__main__':
     learn = True # True learn else run the saved model.
 
     # Simple model
-    # episodes = 2000
-    # better_model = False
+    episodes_random = 1000
+    episodes = 1000
+    better_model = False
 
     # Better model
-    episodes = 3000
-    better_model = True
+    # episodes_random = 2000
+    # episodes = 1000
+    # better_model = True
 
     #######################################
     ##         General rewards           ##
@@ -40,7 +42,9 @@ if __name__ == '__main__':
     ##      Run Deep Q-learning          ##
     #######################################
 
+    random_spawn = True
+
     if learn:
-        train_and_play_q_deep_learning(game, episodes, gamma, rewards_q_learning, better_model)
+        train_and_play_q_deep_learning(game, episodes_random, episodes, gamma, rewards_q_learning, better_model, random_spawn)
     else:
         load_and_play_q_deep_learning(game, rewards_q_learning, better_model)
