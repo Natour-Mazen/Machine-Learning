@@ -104,8 +104,7 @@ def q_deep_learning(game, episodes_random, episodes, gamma, rewards,  better_mod
 
         done = False
         # Epsilon if function of the number of episodes (the more, the less we use randomness when predict).
-        # * 2 : max epsilon -> 0.5, * 4 : max epsilon -> 0.25, * 10 : max epsilon -> 0.1
-        epsilon = 1 - (episode / episodes_random / 1)
+        epsilon = 1 - (episode / episodes_random)
 
         # We stop the randomness of the model.
         if episode >= episodes_random:
