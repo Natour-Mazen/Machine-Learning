@@ -16,14 +16,14 @@ if __name__ == '__main__':
     learn = True # True learn else run the saved model.
 
     # Simple model
-    episodes_random = 1000
-    episodes = 1000
-    better_model = False
+    # episodes_random = 1000
+    # episodes = 1000
+    # better_model = False
 
     # Better model
-    # episodes_random = 2000
-    # episodes = 1000
-    # better_model = True
+    episodes_random = 1000
+    episodes = 1000
+    better_model = True
 
     #######################################
     ##         General rewards           ##

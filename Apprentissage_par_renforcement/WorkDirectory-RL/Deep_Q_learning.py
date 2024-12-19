@@ -76,7 +76,7 @@ def q_deep_learning(game, episodes_random, episodes, gamma, rewards,  better_mod
     # Declaration of the optimizer.
     if better_model:
         #optimizer = tf.keras.optimizers.SGD(learning_rate=0.0001)
-        optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.01) # With 0.001 slow learning
     else:
         #optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
         optimizer = tf.keras.optimizers.Adam(learning_rate=0.01) # With 0.001 slow learning
