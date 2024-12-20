@@ -18,10 +18,10 @@ if __name__ == '__main__':
     #######################################
     ##         General rewards           ##
     #######################################
-    rewards_q_learning = { 'normal': Rewards.NORMAL.value,
-                           'dragon': Rewards.ENEMIES.value,
-                           'end': Rewards.END.value,
-                           'wall': Rewards.WALL.value}
+    rewards_q_learning = { 'normal': -1, #Rewards.NORMAL.value,
+                           'dragon': -10, # Rewards.ENEMIES.value,
+                           'end': 30, # Rewards.END.value,
+                           'wall': -2} # Rewards.WALL.value}
 
     ##############################################
     ## Initialize environment with the Game GUI ##
