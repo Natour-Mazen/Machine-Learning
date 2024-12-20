@@ -13,17 +13,17 @@ if __name__ == '__main__':
     ## Parameters for Deep Q-learning ##
     ####################################
     gamma = 0.999
-    learn = True # True learn else run the saved model.
+    learn = False # True learn else run the saved model.
 
     # Simple model
-    # episodes_random = 1000
-    # episodes = 1000
-    # better_model = False
-
-    # Better model
     episodes_random = 1000
     episodes = 1000
-    better_model = True
+    better_model = False
+
+    # Better model
+    # episodes_random = 1000
+    # episodes = 1000
+    # better_model = True
 
     #######################################
     ##         General rewards           ##
