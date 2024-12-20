@@ -16,7 +16,7 @@ class GameGUI:
         :param use_q_table: Boolean indicating if Q-table visualization is needed.
         """
         self.game = game
-        self.board = Board(game, offset_x=200, offset_y=120)
+        self.board = Board(game, offset_x=200, offset_y=100)
         self.info_panel = InfoPanel(offset_y=20)
 
         # Initialize the Q-table panel only if needed
